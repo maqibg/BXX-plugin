@@ -37,7 +37,7 @@ export const helpList = [
             {
                 "icon": 73,
                 "title": "#QQBotDAU{pro}",
-                "desc": "查看机器人DAU"
+                "desc": "查看机器人DAU，不准"
             },
         ]
     },

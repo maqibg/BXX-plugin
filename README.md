@@ -35,7 +35,6 @@
 |--|--|--|
 |XX写真 |#XX写真 | 某某角色写真图（包含原神，星铁角色） |
 |随机图|#随机图 |随机一张原神，星铁角色图 可能包含BL|
-|视频推送|#不羡仙帮助|推送抖音/B站/快速直播或视频|
 |更新|#不羡仙更新|更新插件|
 
 
@@ -66,7 +65,6 @@
 
 [插件库](https://gitee.com/yhArcadia/Yunzai-Bot-plugins-index)
 
-[KKKKK-10086](https://github.com/ikenxuan/kkkkkk-10086.git)
 ****
 # 其他：
 

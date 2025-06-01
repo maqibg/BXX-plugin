@@ -27,6 +27,16 @@ export const helpList = [
         ]
     },
     {
+        "group": "实用功能",
+        "list": [
+            {
+                "icon": 54,
+                "title": "#广播通知",
+                "desc": "一键群发给黑/白名单群聊消息"
+            },
+        ]
+    },
+    {
         "group": "不羡仙管理",
         "list": [
             {

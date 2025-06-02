@@ -106,7 +106,7 @@ export class xiezhen extends plugin {
       } else if (err.name === 'YAMLException') {
         errorMsg = '配置文件格式错误'
       } else if (err.response) {
-        errorMsg = `API请求失败 (${err.response.status})`
+        errorMsg = `没有该角色的图片~ (${err.response.status})`
       } else if (err.code === 'ECONNABORTED') {
         errorMsg = '请求超时'
       } else if (err.code === 'ETIMEDOUT') {

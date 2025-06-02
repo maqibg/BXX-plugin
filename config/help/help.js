@@ -34,11 +34,6 @@ export const helpList = [
                 "title": "#一键群发",
                 "desc": "一键群发给黑/白名单群聊消息"
             },
-            {
-                "icon": 73,
-                "title": "#QQBotDAU{pro}",
-                "desc": "查看机器人DAU，不准"
-            },
         ]
     },
     {

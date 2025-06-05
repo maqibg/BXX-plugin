@@ -28,7 +28,7 @@ export class randomImage extends plugin {
     const basePath = process.cwd()
     const paths = {
       uploads: path.join(basePath, 'plugins/BXX-plugin/uploads/'),
-      config: path.join(basePath, 'plugins/BXX-plugin/config/config/TPAPI.yaml')
+      config: path.join(basePath, 'plugins/BXX-plugin/data/API/TPAPI.yaml')
     }
     
 

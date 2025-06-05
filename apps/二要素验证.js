@@ -20,8 +20,8 @@ export class IdentityVerification extends plugin {
 
 
     this.otherConfigPath = './config/config/other.yaml';
-    this.adminConfigPath = './plugins/BXX-plugin/data/admin/admin.yaml';
-    this.apiConfigPath = './plugins/BXX-plugin/config/config/SFYZAPI.yaml';
+    this.adminConfigPath = './plugins/BXX-plugin/config/config/admin.yaml';
+    this.apiConfigPath = './plugins/BXX-plugin/data/API/SFYZAPI.yaml';
   }
 
 

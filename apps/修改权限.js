@@ -73,7 +73,7 @@ export default class ModifyPermission extends plugin {
   // 更新admin.yaml配置
   async updateAdminConfig(value) {
     try {
-      const adminPath = `${process.cwd()}/plugins/BXX-plugin/data/admin/admin.yaml`
+      const adminPath = `${process.cwd()}/plugins/BXX-plugin/config/config/admin.yaml`
       
       // 读取并解析YAML
       let adminConfig = {}

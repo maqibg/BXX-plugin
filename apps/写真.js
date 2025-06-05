@@ -34,7 +34,7 @@ export class xiezhen extends plugin {
     }
     
 
-    this.configPath = path.join(basePath, 'plugins/BXX-plugin/config/config/TPAPI.yaml')
+    this.configPath = path.join(basePath, 'plugins/BXX-plugin/data/API/TPAPI.yaml')
   }
 
   async generateXZ(e) {

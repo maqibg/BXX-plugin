@@ -1,0 +1,2 @@
+# plugins/BXX-plugin/config/config/SFYZAPI.yaml
+SFYZAPI: "https://api.nanyinet.com/api/verifyIDCard/api.php?"

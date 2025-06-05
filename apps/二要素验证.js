@@ -18,12 +18,10 @@ export class IdentityVerification extends plugin {
       ]
     });
 
-
     this.otherConfigPath = './config/config/other.yaml';
-    this.adminConfigPath = './plugins/BXX-plugin/config/config/admin.yaml';
-    this.apiConfigPath = './plugins/BXX-plugin/data/API/SFYZAPI.yaml';
+    this.adminConfigPath = './plugins/BXX-plugin/data/admin/admin.yaml';
+    this.apiConfigPath = './plugins/BXX-plugin/config/config/SFYZAPI.yaml';
   }
-
 
   async checkPermission(userId) {
     try {
@@ -33,19 +31,34 @@ export class IdentityVerification extends plugin {
       }
       
       const otherConfig = yaml.parse(fs.readFileSync(this.otherConfigPath, 'utf8'));
+      const userIdStr = userId.toString();
       
-      if (otherConfig.masterQQ && otherConfig.masterQQ.some(item => {
-        const [qq, ..._] = item.split(':');
-        return qq === userId.toString();
-      })) {
-        return true;
+
+      if (otherConfig.masterQQ && Array.isArray(otherConfig.masterQQ)) {
+        for (const item of otherConfig.masterQQ) {
+
+          const qq = typeof item === 'string' && item.includes(':') 
+            ? item.split(':')[0].trim()
+            : String(item).trim();
+            
+          if (qq === userIdStr) {
+            return true;
+          }
+        }
       }
       
-      if (otherConfig.master && otherConfig.master.some(item => {
-        const parts = item.split(':');
-        return parts[parts.length - 1] === userId.toString();
-      })) {
-        return true;
+
+      if (otherConfig.master && Array.isArray(otherConfig.master)) {
+        for (const item of otherConfig.master) {
+          if (typeof item === 'string') {
+            const parts = item.split(':');
+
+            const idPart = parts[parts.length - 1].trim();
+            if (idPart === userIdStr) {
+              return true;
+            }
+          }
+        }
       }
       
       return false;
@@ -55,12 +68,10 @@ export class IdentityVerification extends plugin {
     }
   }
 
-
   getApiUrl() {
     try {
       const apiConfig = yaml.parse(fs.readFileSync(this.apiConfigPath, 'utf8'));
       
-
       if (!apiConfig || !apiConfig.SFYZAPI) {
         throw new Error('API配置缺失：SFYZAPI字段不存在');
       }
@@ -71,20 +82,17 @@ export class IdentityVerification extends plugin {
       throw err; 
     }
   }
-
  
   async verifyIdentity(e) {
     const userId = e.user_id;
     const name = e.msg.match(/#身份验证(.+?):/)[1].trim();
     const idCard = e.msg.split(':')[1].trim();
     
-
     const hasPermission = await this.checkPermission(userId);
     if (!hasPermission) {
       await e.reply('⚠️ 该命令仅主人可用');
       return true;
     }
-
 
     await e.reply(`⚠️ 免责声明：
 不羡仙插件提供免费的二要素功能仅用于学习交流娱乐
@@ -96,7 +104,6 @@ export class IdentityVerification extends plugin {
 最后声明：任何问题均与不羡仙插件无关，不羡仙插件无保护您隐私的责任。`);
     
     try {
-
       const apiUrl = this.getApiUrl();
       const requestUrl = `${apiUrl}name=${encodeURIComponent(name)}&id=${encodeURIComponent(idCard)}`;
       

@@ -1,2 +1,2 @@
-# plugins/BXX-plugin/config/config/TPAPI.yaml
+# 您可以自行修改API请求地址
 XZAPI: "https://api.bxxov.cn/"

@@ -21,6 +21,7 @@ export class IdentityVerification extends plugin {
     this.otherConfigPath = './config/config/other.yaml';
     this.adminConfigPath = './plugins/BXX-plugin/config/config/admin.yaml';
     this.apiConfigPath = './plugins/BXX-plugin/data/API/SFYZAPI.yaml';
+    this.apiKeyPath = './plugins/BXX-plugin/data/API/SFYZKEY.yaml';
   }
 
   async checkPermission(userId) {
@@ -68,6 +69,25 @@ export class IdentityVerification extends plugin {
     }
   }
 
+  getApiKey() {
+    try {
+      if (!fs.existsSync(this.apiKeyPath)) {
+        throw new Error('API密钥配置文件不存在');
+      }
+      
+      const apiKeyConfig = yaml.parse(fs.readFileSync(this.apiKeyPath, 'utf8'));
+      
+      if (!apiKeyConfig || !apiKeyConfig.SFYZKEY) {
+        throw new Error('API密钥配置缺失：SFYZKEY字段不存在');
+      }
+      
+      return apiKeyConfig.SFYZKEY;
+    } catch (err) {
+      console.error('读取API密钥出错:', err);
+      throw err;
+    }
+  }
+
   getApiUrl() {
     try {
       const apiConfig = yaml.parse(fs.readFileSync(this.apiConfigPath, 'utf8'));
@@ -98,6 +118,9 @@ export class IdentityVerification extends plugin {
 不羡仙插件提供免费的二要素功能仅用于学习交流娱乐
 不会收集/记录/分享/保存/泄漏您提供的身份信息
 发送命令后请及时撤回！以免信息泄漏。
+本功能涉及接口权限黑白名单原因
+需要您加入不羡仙插件群聊或到yunz.cc提交工单拉白才可使用！
+加入不羡仙群聊找群主或注册yunz.cc提交过白工单拉白即可
 请勿使用本功能进行违反违规活动！否则将全局拉黑。
 请勿在人多且有坏人的地方使用该功能，如被泄漏信息与本插件无关。
 请确认好您的使用权限，避免被有心之人使用进行违规操作。
@@ -105,21 +128,36 @@ export class IdentityVerification extends plugin {
     
     try {
       const apiUrl = this.getApiUrl();
-      const requestUrl = `${apiUrl}name=${encodeURIComponent(name)}&id=${encodeURIComponent(idCard)}`;
+      const apiKey = this.getApiKey();
+      
+      const requestUrl = `${apiUrl}apikey=${encodeURIComponent(apiKey)}&name=${encodeURIComponent(name)}&id=${encodeURIComponent(idCard)}`;
       
       const response = await fetch(requestUrl);
       const data = await response.json();
       
+
       if (data.code === 1) {
         await e.reply('✅ 姓名与身份证号码验证成功\n二要素验证已通过\n请撤回命令消息');
       } else if (data.code === 0) {
         await e.reply('❌ 身份证号码/姓名格式错误，请检查！');
+      } else if (data.code === 102) {
+        await e.reply('❌ 您的IP不在白名单内！请加入不羡仙插件群聊拉白使用！');
       } else {
-        await e.reply('⚠️ 验证服务返回未知结果，请稍后再试');
+        await e.reply(`⚠️ 验证服务返回未知结果：${data.msg || '请稍后再试'}`);
       }
     } catch (err) {
       console.error('API请求出错:', err);
-      await e.reply('⚠️ 验证服务配置错误，请联系管理员');
+      
+      let errorMsg = '⚠️ 验证服务配置错误，请联系管理员';
+      if (err.message.includes('API密钥配置文件不存在')) {
+        errorMsg = '⚠️ API密钥配置文件不存在，请检查路径';
+      } else if (err.message.includes('SFYZKEY字段不存在')) {
+        errorMsg = '⚠️ API密钥配置错误：缺少SFYZKEY字段';
+      } else if (err.message.includes('API配置缺失')) {
+        errorMsg = '⚠️ API基础URL配置错误';
+      }
+      
+      await e.reply(errorMsg);
       return true;
     }
     

@@ -17,12 +17,8 @@ export function supportGuoba() {
       if (fs.existsSync(filePath)) {
         const content = fs.readFileSync(filePath, 'utf8')
         const parsed = yaml.parse(content)
-
-        // 特殊处理：尝试获取第一个键的值（兼容旧格式）
         const keys = Object.keys(parsed)
-        if (keys.length > 0) {
-          return parsed[keys[0]]
-        }
+        return keys.length > 0 ? parsed : defaultValue
       }
       return defaultValue
     } catch (e) {
@@ -41,12 +37,11 @@ export function supportGuoba() {
       let content = ""
       if (comment) content += `# ${comment}\n`
       
-      // 特殊处理：空值写入空字符串
-      if (value === null || value === undefined) {
+      if (value === undefined || value === null) {
         value = ""
       }
       
-      // 字符串值用引号包裹
+
       content += `${key}: ${typeof value === 'string' ? `"${value}"` : value}`
       
       fs.writeFileSync(filePath, content)
@@ -93,12 +88,12 @@ export function supportGuoba() {
         {
           field: 'LFTCK',
           label: '老福特Cookie',
-          helpMessage: '必填项 | 用于老福特平台登陆',
+          helpMessage: '用于老福特平台登陆（非必填）',
           bottomHelpMessage: '使用VIA浏览器或使用电脑F12获取CK 登录老福特后获取Cookie 重启生效CK可用时长约48h',
           component: 'InputPassword',
-          required: true,
+          required: false,
           componentProps: {
-            placeholder: '在此输入Cookie值',
+            placeholder: '在此输入Cookie值（可选）',
             showPassword: true
           }
         },
@@ -124,7 +119,7 @@ export function supportGuoba() {
           component: 'InputPassword',
           required: false,
           componentProps: {
-            placeholder: '输入SFYZ密钥',
+            placeholder: '输入平台中的KEY密钥',
             showPassword: true
           }
         },
@@ -132,26 +127,24 @@ export function supportGuoba() {
         {
           field: 'SFYZAPI',
           label: '身份验证 API地址',
-          helpMessage: 'API地址',
+          helpMessage: '身份验证API地址',
           bottomHelpMessage: '身份验证API接口，如你不懂不羡仙API接口地址逻辑请勿修改',
           component: 'Input',
           required: false,
           componentProps: {
-            placeholder: 'https://api.example.com/endpoint'
+            placeholder: 'https://api.bxxov.com/'
           }
         },
 
         {
           field: 'TPAPI',
           label: '图片API 配置',
-          helpMessage: '第三方API配置',
-          bottomHelpMessage: [
-            '图片API接口地址，如你不懂接口书写/请求逻辑请勿随意修改',
-          ].join('\n'),
+          helpMessage: '第三方API配置（重要）',
+          bottomHelpMessage: '图片API接口，如你不懂不羡仙API接口请求逻辑请勿修改',
           component: 'Input',
-          required: false,
+          required: false, 
           componentProps: {
-            placeholder: '输入API地址'
+            placeholder: '必须输入有效的API地址'
           }
         },
 
@@ -184,30 +177,33 @@ export function supportGuoba() {
       
       // 获取当前配置数据
       getConfigData() {
-        return {
-          LFTCK: readYamlConfig(lftckPath, ""),
-          SFYZKEY: readYamlConfig(sfyzkPath, ""),
-          SFYZAPI: readYamlConfig(sfyzaPath, ""),
-          TPAPI: readYamlConfig(tpapiPath, ""),
-          adminAll: readYamlConfig(adminPath, false)
+        const config = {
+          LFTCK: readYamlConfig(lftckPath, {}).LFTCK || "",
+          SFYZKEY: readYamlConfig(sfyzkPath, {}).SFYZKEY || "",
+          SFYZAPI: readYamlConfig(sfyzaPath, {}).SFYZAPI || "",
+          TPAPI: readYamlConfig(tpapiPath, {}).TPAPI || "",
+          adminAll: readYamlConfig(adminPath, {}).adminAll || false
         }
+        
+        console.log('当前图片API配置:', config.TPAPI)
+        return config
       },
       
 
       setConfigData(data) {
         const { LFTCK, SFYZKEY, SFYZAPI, TPAPI, adminAll } = data;
         
-
-        writeYamlConfig(lftckPath, 'LFTCK', LFTCK, '老福特Cookie');
-        writeYamlConfig(sfyzkPath, 'SFYZKEY', SFYZKEY, '身份验证密钥');
-        writeYamlConfig(sfyzaPath, 'SFYZAPI', SFYZAPI, '身份验证API地址');
+        // 写入各配置文件
+        writeYamlConfig(lftckPath, 'LFTCK', LFTCK || "", '老福特Cookie');
+        writeYamlConfig(sfyzkPath, 'SFYZKEY', SFYZKEY || "", '身份验证密钥');
+        writeYamlConfig(sfyzaPath, 'SFYZAPI', SFYZAPI || "", '身份验证API地址');
+        writeYamlConfig(tpapiPath, 'TPAPI', TPAPI || "", '图片API配置');
         
-
-        writeYamlConfig(tpapiPath, 'TPAPI', TPAPI, '图片API配置');
-        writeYamlConfig(adminPath, 'adminAll', !!adminAll, '身份验证权限');
+        const adminValue = !!adminAll
+        writeYamlConfig(adminPath, 'adminAll', adminValue, '身份验证权限');
         
-        console.log('配置已保存');
-        console.log(`图片API路径: ${tpapiPath}`);
+        console.log('配置已保存 - 图片API值:', TPAPI || "未设置")
+        console.log('配置文件路径:', tpapiPath)
         
         return true;
       },
@@ -217,7 +213,7 @@ export function supportGuoba() {
           LFTCK: configNote(lftckPath),
           SFYZKEY: configNote(sfyzkPath),
           SFYZAPI: configNote(sfyzaPath),
-          TPAPI: configNote(tpapiPath),
+          TPAPI: configNote(tpapiPath) + '\n此配置必须填写有效API地址',
           adminAll: configNote(adminPath)
         };
         return notes[field] || '';

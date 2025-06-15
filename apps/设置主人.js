@@ -21,7 +21,6 @@ export class setMaster extends plugin {
   }
 
   async setMaster(e) {
-    // 验证主人权限
     if (!(await this.isMaster(e.user_id))) {
       await e.reply('只有主人可以执行该命令')
       return true
@@ -52,23 +51,19 @@ export class setMaster extends plugin {
     return true
   }
 
-  // 验证QQ格式
   isValidQQ(qq) {
     return /^(\d+|qg_\w+|stdin)$/.test(qq)
   }
 
-  // 检查是否是主人
   async isMaster(userId) {
     try {
       const config = await this.readConfig()
       const userIdStr = String(userId)
       
-      // 检查masterQQ列表
       if (config.masterQQ && config.masterQQ.includes(userIdStr)) {
         return true
       }
       
-      // 检查master列表
       if (config.master) {
         for (const item of config.master) {
           const parts = item.split(':')
@@ -83,17 +78,14 @@ export class setMaster extends plugin {
     return false
   }
 
-  // 读取配置文件
   async readConfig() {
     const fileContent = await fs.promises.readFile(this.configPath, 'utf8')
     return yaml.parse(fileContent)
   }
 
-  // 更新配置文件
   async updateMasterConfig(adminQQ, botQQ) {
     const config = await this.readConfig()
     
-    // 确保配置项存在
     config.masterQQ = config.masterQQ || []
     config.master = config.master || []
     
@@ -109,7 +101,6 @@ export class setMaster extends plugin {
       config.master.push(newEntry)
     }
     
-    // 写入配置文件
     const yamlString = yaml.stringify(config)
     await fs.promises.writeFile(this.configPath, yamlString, 'utf8')
   }

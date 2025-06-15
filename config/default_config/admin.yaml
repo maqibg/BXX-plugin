@@ -2,10 +2,6 @@
 all: false
 # 网站信息获取是否允许所有人可用
 all: true
-# Ping是否允许所有人可用
-all: true
-# Sping是否允许所有人可用
-all: true
 # 端口扫描是否允许所有人可用
 all: false
 # Whois域名查询是否允许所有人可用

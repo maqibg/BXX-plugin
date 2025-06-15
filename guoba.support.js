@@ -115,7 +115,7 @@ export function supportGuoba() {
           field: 'SFYZKEY',
           label: '身份验证 密钥',
           helpMessage: '用于API认证的安全密钥KEY',
-          bottomHelpMessage: '身份验证API接口平台KEY，如你不懂不羡仙API书写方式请勿修改',
+          bottomHelpMessage: '身份验证API接口平台KEY，如你不懂不羡仙API平台加密方式请勿修改',
           component: 'InputPassword',
           required: false,
           componentProps: {

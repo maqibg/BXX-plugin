@@ -28,7 +28,7 @@ function readYamlConfig(filePath, key, defaultValue = "") {
         try {
             parsed = yaml.parse(content) || {}
         } catch (parseError) {
-            console.error(`[BXX] YAML解析错误 (${path.basename(filePath)}):`, parseError)
+            console.error(`[BXX] YAML解析错误！ (${path.basename(filePath)}):`, parseError)
         
             const keyValueMatch = content.match(new RegExp(`${key}:\\s*(.*?)(\\s*#|\\s*$)`))
             if (keyValueMatch && keyValueMatch[1]) {

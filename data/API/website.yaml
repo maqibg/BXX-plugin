@@ -1,5 +1,5 @@
 # 网站信息API
-WZXXAPI: "114514"
+WZXXAPI: "https://api.nanyinet.com/api/gateway/website/api.php"
 # 端口扫描API
 DKSMAPI: "114514"
 # Whois域名查询API

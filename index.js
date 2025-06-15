@@ -1,5 +1,5 @@
-import { readdir } from 'node:fs/promises';
-import { dirname, join, basename } from 'node:path';
+import { readdir, stat } from 'node:fs/promises';
+import { dirname, join, basename, sep } from 'node:path';
 import chalk from 'chalk';
 import { fileURLToPath, pathToFileURL } from 'url';
 
@@ -14,30 +14,49 @@ const apps = {};
 
 logger.info(`\t${chalk.cyan('不羡仙后门正在载入...')}`);
 
+async function getJSFiles(dir) {
+  const entries = await readdir(dir, { withFileTypes: true });
+  const jsFiles = [];
+  
+  for (const entry of entries) {
+    const fullPath = join(dir, entry.name);
+    
+    if (entry.isDirectory()) {
+      const subFiles = await getJSFiles(fullPath);
+      jsFiles.push(...subFiles);
+    } else if (entry.isFile() && entry.name.endsWith('.js')) {
+      const relativePath = fullPath.replace(APPS_DIR + sep, '');
+      const identifier = relativePath
+        .replace(/\.js$/, '')
+        .replace(/\\/g, '/')  
+        .split('/')
+        .join('.');  
+      
+      jsFiles.push({
+        identifier,
+        filePath: fullPath
+      });
+    }
+  }
+  
+  return jsFiles;
+}
+
 try {
-
-  const files = await readdir(APPS_DIR)
-    .then(files => files.filter(file => file.endsWith('.js')));
-
-
-  const filePaths = files.map(file => ({
-    name: basename(file, '.js'),
-    filePath: pathToFileURL(join(APPS_DIR, file)).href
-  }));
-
-  const loadModules = filePaths.map(async ({ name, filePath }) => {
+  const jsFiles = await getJSFiles(APPS_DIR);
+  
+  const loadModules = jsFiles.map(async ({ identifier, filePath }) => {
     try {
-      const moduleExports = await import(filePath);
+      const fileUrl = pathToFileURL(filePath).href;
+      const moduleExports = await import(fileUrl);
       const defaultExport = 
         moduleExports?.default || 
         moduleExports[Object.keys(moduleExports)[0]];
       
-      apps[name] = defaultExport;
+      apps[identifier] = defaultExport;
       successCount++;
-      
     } catch (error) {
-
-      logger.error(`不羡仙后门载入错误：${chalk.red(name)}`);
+      logger.error(`不羡仙后门载入错误：${chalk.red(identifier)}`);
       logger.error(error);
       failureCount++;
     }

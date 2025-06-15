@@ -19,13 +19,11 @@ export default class ModifyPermission extends plugin {
   }
 
   async modifyPermission(e) {
-    // 检查用户权限
     if (!(await this.checkMaster(e))) {
       await e.reply('该权限仅主人可用')
       return true
     }
 
-    // 获取命令参数
     const action = e.msg.includes('开启') ? true : false
     const result = await this.updateAdminConfig(action)
     
@@ -33,17 +31,15 @@ export default class ModifyPermission extends plugin {
     return true
   }
 
-  // 检查用户权限
   async checkMaster(e) {
     try {
-      // 读取other.yaml配置
+
       const configPath = `${process.cwd()}/config/config/other.yaml`
       if (!fs.existsSync(configPath)) return false
       
       const config = yaml.parse(fs.readFileSync(configPath, 'utf8'))
       const userId = String(e.user_id)
 
-      // 检查masterQQ列表
       if (config.masterQQ) {
         for (const item of config.masterQQ) {
           if (typeof item === 'string') {
@@ -53,7 +49,7 @@ export default class ModifyPermission extends plugin {
         }
       }
 
-      // 检查master列表
+
       if (config.master) {
         for (const item of config.master) {
           if (typeof item === 'string') {
@@ -70,21 +66,17 @@ export default class ModifyPermission extends plugin {
     }
   }
 
-  // 更新admin.yaml配置
   async updateAdminConfig(value) {
     try {
       const adminPath = `${process.cwd()}/plugins/BXX-plugin/config/config/admin.yaml`
       
-      // 读取并解析YAML
       let adminConfig = {}
       if (fs.existsSync(adminPath)) {
         adminConfig = yaml.parse(fs.readFileSync(adminPath, 'utf8'))
       }
       
-      // 更新all字段
       adminConfig.all = value
       
-      // 写回文件
       fs.writeFileSync(adminPath, yaml.stringify(adminConfig))
       return true
     } catch (err) {

@@ -17,8 +17,12 @@ export class Updates extends plugin {
             ]
         })
     }
+    
     async update(e = this.e, isauto = false) {
-        if (!e.isMaster) return;
+        if (!e.isMaster) {
+            await e.reply("暂无权限，只有主人才能操作");
+            return true; 
+        }
         
         e.isMaster = true
         

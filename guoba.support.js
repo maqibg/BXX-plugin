@@ -2,7 +2,6 @@ import fs from 'fs'
 import path from 'path'
 import yaml from 'yaml'
 
-
 const configDir = path.resolve('./plugins/BXX-plugin/')
 const lftckPath = path.join(configDir, 'data/Cookie/LFTCK.yaml')
 const sfyzkPath = path.join(configDir, 'data/API/SFYZKEY.yaml')
@@ -29,16 +28,13 @@ export function supportGuoba() {
     }
   }
 
-
   function writeYamlConfig(filePath, key, value, comment = "") {
     try {
-
       const dir = path.dirname(filePath)
       if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, { recursive: true })
       }
       
-
       let content = ""
       if (comment) content += `# ${comment}\n`
       content += `${key}: ${typeof value === 'string' ? `"${value}"` : value}`
@@ -50,7 +46,6 @@ export function supportGuoba() {
       return false
     }
   }
-
 
   function configNote(filePath) {
     const relativePath = path.relative(process.cwd(), filePath)
@@ -148,7 +143,6 @@ export function supportGuoba() {
           }
         },
 
-
         // 分区：权限配置
         {
           component: 'Divider',
@@ -174,7 +168,6 @@ export function supportGuoba() {
             style: { width: 'fit-content' }
           }
         },
-
       ],
       
       // 获取当前配置数据
@@ -188,38 +181,32 @@ export function supportGuoba() {
         }
       },
       
-      // 保存配置数据
-      async setConfigData(data, { Result }) {
-        try {
-          // 保存老福特Cookie
-          if (data.LFTCK !== undefined) {
-            writeYamlConfig(lftckPath, "LFTCK", data.LFTCK, "老福特Cookie")
-          }
-          
-          // 保存API密钥
-          if (data.SFYZKEY !== undefined) {
-            writeYamlConfig(sfyzkPath, "KEY", data.SFYZKEY, "身份验证密钥")
-          }
-          
-          // 保存API地址
-          if (data.SFYZAPI !== undefined) {
-            writeYamlConfig(sfyzaPath, "API", data.SFYZAPI, "身份验证API地址")
-          }
-          
-          // 保存TPAPI配置
-          if (data.TPAPI !== undefined) {
-            writeYamlConfig(tpapiPath, "TPAPI", data.TPAPI, "图片API配置")
-          }
-          
-          // 保存权限设置
-          if (data.adminAll !== undefined) {
-            writeYamlConfig(adminPath, "all", data.adminAll, "身份验证是否允许所有人使用")
-          }
-          
-          return Result.ok({}, '配置已成功保存！')
-        } catch (e) {
-          return Result.error(`保存失败: ${e.message}`)
-        }
+      // 新增：保存配置数据
+      setConfigData(data) {
+        const { LFTCK, SFYZKEY, SFYZAPI, TPAPI, adminAll } = data;
+        
+        // 写入各配置文件
+        writeYamlConfig(lftckPath, 'LFTCK', LFTCK, '老福特Cookie');
+        writeYamlConfig(sfyzkPath, 'SFYZKEY', SFYZKEY, '身份验证密钥');
+        writeYamlConfig(sfyzaPath, 'SFYZAPI', SFYZAPI, '身份验证API地址');
+        writeYamlConfig(tpapiPath, 'TPAPI', TPAPI, '图片API配置');
+        
+        // 特殊处理布尔值
+        writeYamlConfig(adminPath, 'adminAll', !!adminAll, '身份验证权限');
+        
+        return true;
+      },
+      
+      // 新增：字段保存位置提示
+      setNote: (field) => {
+        const notes = {
+          LFTCK: configNote(lftckPath),
+          SFYZKEY: configNote(sfyzkPath),
+          SFYZAPI: configNote(sfyzaPath),
+          TPAPI: configNote(tpapiPath),
+          adminAll: configNote(adminPath)
+        };
+        return notes[field] || '';
       }
     }
   }

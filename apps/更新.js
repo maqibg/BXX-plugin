@@ -18,14 +18,16 @@ export class Updates extends plugin {
         })
     }
     async update(e = this.e, isauto = false) {
-        if (!(e.isMaster || e.user_id == 2150925343)) return;
+        if (!e.isMaster) return;
+        
         e.isMaster = true
+        
         if (e.at && !e.atme) return;
+        
         e.msg = `#${e.msg.includes("强制") ? "强制" : ""}更新BXX-plugin`;
 
         const up = new Update(e);
         up.e = e;
         return up.update();
     }
-
 }

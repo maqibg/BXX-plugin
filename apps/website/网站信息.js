@@ -25,7 +25,7 @@ export default class extends plugin {
             return true;
         }
 
-        const url = e.msg.match(/(https?:\/\/[^\s]+)/)[0];
+        const url = e.match[1];
         try {
             const { apiUrl, apiKey } = await this.getApiConfig();
             if (!apiUrl || !apiKey) {
@@ -56,10 +56,12 @@ export default class extends plugin {
         );
         
         try {
-            const adminConfig = fs.readFileSync(adminPath, 'utf8');
-            const wzxxAll = adminConfig.match(/WZXXALL:\s*(true|false)/);
-            
-            if (wzxxAll && wzxxAll[1] === 'true') return true;
+            if (fs.existsSync(adminPath)) {
+                const adminConfig = fs.readFileSync(adminPath, 'utf8');
+                const wzxxAll = adminConfig.match(/WZXXALL:\s*(true|false)/);
+                
+                if (wzxxAll && wzxxAll[1] === 'true') return true;
+            }
         } catch (err) {
             console.error('读取权限配置失败:', err);
         }
@@ -74,17 +76,43 @@ export default class extends plugin {
         );
 
         try {
-            const otherConfig = fs.readFileSync(otherPath, 'utf8');
-            const masterMatch = otherConfig.match(/masterQQ:\s*[\r\n]+\s*-\s*(\d+)/);
-            const botMasterMatch = otherConfig.match(/master:\s*[\r\n]+\s*-\s*(\d+:\d+)/);
-            const userId = e.user_id;
-            const masterQQ = masterMatch ? masterMatch[1] : null;
-            
-            if (masterQQ && masterQQ === userId.toString()) return true;
-            
-            if (botMasterMatch) {
-                const [, botId, masterId] = botMasterMatch[1].match(/(\d+):(\d+)/);
-                if (masterId === userId.toString()) return true;
+            if (fs.existsSync(otherPath)) {
+                const otherConfig = fs.readFileSync(otherPath, 'utf8');
+                const userId = e.user_id;
+                
+                const masterQQRegex = /masterQQ:\s*[\r\n]+([\s\S]*?)(?=\r?\n\w|$)/;
+                const masterQQMatch = otherConfig.match(masterQQRegex);
+                
+                if (masterQQMatch) {
+                    const masterQQList = masterQQMatch[1].split('\n')
+                        .filter(line => line.trim().startsWith('-'))
+                        .map(line => line.replace(/^-\s*/, '').trim());
+                    
+                    if (masterQQList.includes(userId.toString()) {
+                        return true;
+                    }
+                }
+                
+                const masterRegex = /master:\s*[\r\n]+([\s\S]*?)(?=\r?\n\w|$)/;
+                const masterMatch = otherConfig.match(masterRegex);
+                
+                if (masterMatch) {
+                    const masterList = masterMatch[1].split('\n')
+                        .filter(line => line.trim().startsWith('-'))
+                        .map(line => line.replace(/^-\s*/, '').trim());
+                    
+                    for (const item of masterList) {
+                        if (item.includes(':')) {
+                            const parts = item.split(':');
+                            if (parts.length >= 2 && parts[parts.length - 1] === userId.toString()) {
+                                return true;
+                            }
+                        }
+                        else if (item === userId.toString()) {
+                            return true;
+                        }
+                    }
+                }
             }
         } catch (err) {
             console.error('读取主人配置失败:', err);
@@ -103,16 +131,21 @@ export default class extends plugin {
         );
 
         try {
-            const apiConfig = fs.readFileSync(apiPath, 'utf8');
-            const keyConfig = fs.readFileSync(keyPath, 'utf8');
+            let apiUrl = null, apiKey = null;
             
-            const apiMatch = apiConfig.match(/WZXXAPI:\s*"([^"]+)"/);
-            const keyMatch = keyConfig.match(/WZXXKEY:\s*"([^"]+)"/);
+            if (fs.existsSync(apiPath)) {
+                const apiConfig = fs.readFileSync(apiPath, 'utf8');
+                const apiMatch = apiConfig.match(/WZXXAPI:\s*"([^"]+)"/);
+                apiUrl = apiMatch ? apiMatch[1] : null;
+            }
             
-            return {
-                apiUrl: apiMatch ? apiMatch[1] : null,
-                apiKey: keyMatch ? keyMatch[1] : null
-            };
+            if (fs.existsSync(keyPath)) {
+                const keyConfig = fs.readFileSync(keyPath, 'utf8');
+                const keyMatch = keyConfig.match(/WZXXKEY:\s*"([^"]+)"/);
+                apiKey = keyMatch ? keyMatch[1] : null;
+            }
+            
+            return { apiUrl, apiKey };
         } catch (err) {
             console.error('读取API配置失败:', err);
             return { apiUrl: null, apiKey: null };
@@ -150,17 +183,11 @@ export default class extends plugin {
                 logoPath = path.join(uploadDir, `website_logo_${Date.now()}${ext}`);
                 
                 const response = await axios.get(logoUrl, {
-                    responseType: 'stream',
+                    responseType: 'arraybuffer',
                     timeout: 10000
                 });
                 
-                const writer = fs.createWriteStream(logoPath);
-                response.data.pipe(writer);
-                
-                await new Promise((resolve, reject) => {
-                    writer.on('finish', resolve);
-                    writer.on('error', reject);
-                });
+                fs.writeFileSync(logoPath, response.data);
             } catch (err) {
                 console.error('Logo下载失败:', err);
             }
@@ -182,9 +209,11 @@ export default class extends plugin {
         await e.reply(msg);
 
         if (logoPath && fs.existsSync(logoPath)) {
-            fs.unlink(logoPath, (err) => {
-                if (err) console.error('删除临时文件失败:', err);
-            });
+            setTimeout(() => {
+                fs.unlink(logoPath, (err) => {
+                    if (err) console.error('删除临时文件失败:', err);
+                });
+            }, 3000); 
         }
     }
 }

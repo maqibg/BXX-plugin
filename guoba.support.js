@@ -181,23 +181,19 @@ export function supportGuoba() {
         }
       },
       
-      // 新增：保存配置数据
+
       setConfigData(data) {
         const { LFTCK, SFYZKEY, SFYZAPI, TPAPI, adminAll } = data;
         
-        // 写入各配置文件
         writeYamlConfig(lftckPath, 'LFTCK', LFTCK, '老福特Cookie');
         writeYamlConfig(sfyzkPath, 'SFYZKEY', SFYZKEY, '身份验证密钥');
         writeYamlConfig(sfyzaPath, 'SFYZAPI', SFYZAPI, '身份验证API地址');
         writeYamlConfig(tpapiPath, 'TPAPI', TPAPI, '图片API配置');
-        
-        // 特殊处理布尔值
         writeYamlConfig(adminPath, 'adminAll', !!adminAll, '身份验证权限');
         
         return true;
       },
       
-      // 新增：字段保存位置提示
       setNote: (field) => {
         const notes = {
           LFTCK: configNote(lftckPath),

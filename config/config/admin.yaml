@@ -1,5 +1,5 @@
-# 身份验证是否允许所有人可用
-all: true
+# 给自己个备注：一定要按顺序书写！不要修改到其他行因为自己写的验证是固定行的！
+# 示例：XXXall: true
 # 网站信息获取是否允许所有人可用
 WZXXALL: true
 # 端口扫描是否允许所有人可用
@@ -12,4 +12,3 @@ RWMALL: true
 ICPALL: true
 # 抖音视频解析是否允许所有人可用
 DYJXALL: true
-adminAll: false

@@ -7,6 +7,6 @@ YMCXKEY: "f9f75bcb-f8b6-f88c-81a3-26823223ec35b4fd7f8c"
 # 二维码生成KEY
 RWMKEY: "34823f04-c5ba-d005-1bc7-0c4eeab489a180932a68"
 # ICP查询KEY
-ICPAPI: "250fd51c-3def-7a34-ca77-3542bf8bc31d2aaa5315"
+ICPKEY: "250fd51c-3def-7a34-ca77-3542bf8bc31d2aaa5315"
 # SSL证书查询KEY
-SSLAPI: "h1b2cf948-a5b4-64ca-84c6-dd63aabb426bef8c23e4"
+SSLKEY: "h1b2cf948-a5b4-64ca-84c6-dd63aabb426bef8c23e4"

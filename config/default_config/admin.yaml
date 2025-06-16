@@ -6,11 +6,11 @@ WZXXALL: true
 DKSMALL: false
 # Whois域名查询是否允许所有人可用
 WSYMALL: false
-# 全球IP信息查询是否允许所有人可用
-IPCXALL: true
-# 网站测速是否允许所有人可用
-WZCSALL: true
 # 二维码生成是否允许所有人可用
-SRWMALL: true
+RWMALL: true
+# ICP备案查询是否所有人可用
+ICPALL: true
+# SSL证书查询是否所有人可用
+SSLALL: true
 # 抖音视频解析是否允许所有人可用
 DYJXALL: true

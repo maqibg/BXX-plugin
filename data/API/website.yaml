@@ -1,12 +1,10 @@
 # 网站信息API
 WZXXAPI: "https://api.nanyinet.com/api/gateway/website/api.php"
 # 端口扫描API
-DKSMAPI: "114514"
+DKSMAPI: "https://api.nanyinet.com/api/gateway/port/api.php"
 # Whois域名查询API
-YMCXAPI: "114514"
+YMCXAPI: "https://api.nanyinet.com/api/gateway/whois/api.php"
 # 全球IP信息查询API
-IPCXAPI: "114514"
-# 网站测速API
-WZCSAPI: "114514"
+IPCXAPI: "https://api.nanyinet.com/api/gateway/ip/api.php"
 # 二维码生成API
-RWMAPI: "114514"
+RWMAPI: "https://api.nanyinet.com/api/gateway/qrcode/api.php"

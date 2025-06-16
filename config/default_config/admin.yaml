@@ -10,7 +10,5 @@ WSYMALL: false
 RWMALL: true
 # ICP备案查询是否所有人可用
 ICPALL: true
-# SSL证书查询是否所有人可用
-SSLALL: true
 # 抖音视频解析是否允许所有人可用
 DYJXALL: true

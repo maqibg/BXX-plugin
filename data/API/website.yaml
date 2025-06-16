@@ -4,8 +4,6 @@ WZXXAPI: "https://api.nanyinet.com/api/gateway/website/api.php"
 DKSMAPI: "https://api.nanyinet.com/api/gateway/port/api.php"
 # Whois域名查询API
 YMCXAPI: "https://api.nanyinet.com/api/gateway/whois/api.php"
-# 全球IP信息查询API
-IPCXAPI: "https://api.nanyinet.com/api/gateway/ip/api.php"
 # 二维码生成API
 RWMAPI: "https://api.nanyinet.com/api/gateway/qrcode/api.php"
 # ICP查询API

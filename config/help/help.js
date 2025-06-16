@@ -95,11 +95,6 @@ export const helpList = [
                 "title": "#备案查询+域名",
                 "desc": "查询ICP域名备案"
             },
-            {
-                "icon": 22,
-                "title": "#证书查询+域名",
-                "desc": "查询SSL证书"
-            },
         ]
     },
     {

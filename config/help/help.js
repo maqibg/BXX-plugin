@@ -95,6 +95,16 @@ export const helpList = [
                 "title": "#二维码合成+链接/文字",
                 "desc": "将链接/文字合成为二维码"
             },
+            {
+                "icon": 33,
+                "title": "#备案查询+域名",
+                "desc": "查询ICP域名备案"
+            },
+            {
+                "icon": 22,
+                "title": "#证书查询+域名",
+                "desc": "查询SSL证书"
+            },
         ]
     },
     {

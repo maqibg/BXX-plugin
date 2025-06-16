@@ -4,10 +4,10 @@ import yaml from 'yaml'
 
 const configDir = path.resolve('./plugins/BXX-plugin/')
 const lftckPath = path.join(configDir, 'data/Cookie/LFTCK.yaml')
-const sfyzkPath = path.join(configDir, 'data/API/SFYZKEY.yaml')
-const sfyzaPath = path.join(configDir, 'data/API/SFYZAPI.yaml')
 const tpapiPath = path.join(configDir, 'data/API/TPAPI.yaml')
 const adminPath = path.join(configDir, 'config/config/admin.yaml')
+const websiteApiPath = path.join(configDir, 'data/API/website.yaml')
+const websiteKeyPath = path.join(configDir, 'data/KEY/website.yaml')
 
 function readYamlConfig(filePath, key, defaultValue = "") {
     try {
@@ -79,7 +79,6 @@ function readYamlConfig(filePath, key, defaultValue = "") {
     }
 }
 
-
 function writeYamlConfig(filePath, key, value) {
     try {
         const dir = path.dirname(filePath)
@@ -95,7 +94,6 @@ function writeYamlConfig(filePath, key, value) {
             lines = content.split('\n')
         }
         
-
         const newLines = []
         for (const line of lines) {
             if (line.trim().startsWith(`${key}:`)) {
@@ -149,57 +147,6 @@ export function supportGuoba() {
         },
         configInfo: {
             schemas: [
-                // Cookie配置分区
-                {
-                    component: 'Divider',
-                    label: 'Cookie 配置',
-                    componentProps: {
-                        orientation: 'left',
-                        plain: true,
-                        style: { 
-                            marginTop: '20px',
-                            borderColor: '#FF5722'
-                        }
-                    }
-                },
-                {
-                    field: 'LFTCK',
-                    label: '老福特Cookie',
-                    helpMessage: '用于绕过老福特登陆',
-                    bottomHelpMessage: '使用VIA浏览器或使用电脑F12获取CK 登录老福特后获取Cookie 重启生效CK可用时长约48h',
-                    component: 'InputPassword',
-                    required: false,
-                    componentProps: {
-                        placeholder: '在此输入Cookie值',
-                        showPassword: true
-                    }
-                },
-
-                // API配置分区
-                {
-                    component: 'Divider',
-                    label: 'API 配置',
-                    componentProps: {
-                        orientation: 'left',
-                        plain: true,
-                        style: { 
-                            marginTop: '30px',
-                            borderColor: '#2196F3'
-                        }
-                    }
-                },
-                {
-                    field: 'TPAPI',
-                    label: '图片API 配置',
-                    helpMessage: '图片API配置',
-                    bottomHelpMessage: '图片API接口地址，如你不懂不羡仙接口书写/请求逻辑请勿随意修改',
-                    component: 'Input',
-                    required: false,
-                    componentProps: {
-                        placeholder: '输入API地址'
-                    }
-                },
-
                 // 权限配置分区
                 {
                     component: 'Divider',
@@ -208,8 +155,9 @@ export function supportGuoba() {
                         orientation: 'left',
                         plain: true,
                         style: { 
-                            marginTop: '30px',
-                            borderColor: '#4CAF50'
+                            marginTop: '20px',
+                            borderColor: '#4CAF50',
+                            fontSize: '18px'
                         }
                     }
                 },
@@ -225,23 +173,324 @@ export function supportGuoba() {
                         style: { width: 'fit-content' }
                     }
                 },
+                {
+                    field: 'WZXXALL',
+                    label: '网站信息所有人可用',
+                    helpMessage: '控制网站信息功能权限',
+                    bottomHelpMessage: '开启后所有用户均可使用网站信息功能',
+                    component: 'Switch',
+                    componentProps: {
+                        checkedChildren: '开启',
+                        unCheckedChildren: '关闭',
+                        style: { width: 'fit-content' }
+                    }
+                },
+                {
+                    field: 'DKSMALL',
+                    label: '端口扫描所有人可用',
+                    helpMessage: '控制端口扫描功能权限',
+                    bottomHelpMessage: '开启后所有用户均可使用端口扫描功能',
+                    component: 'Switch',
+                    componentProps: {
+                        checkedChildren: '开启',
+                        unCheckedChildren: '关闭',
+                        style: { width: 'fit-content' }
+                    }
+                },
+                {
+                    field: 'WSYMALL',
+                    label: '域名查询所有人可用',
+                    helpMessage: '控制域名查询功能权限',
+                    bottomHelpMessage: '开启后所有用户均可使用域名查询功能',
+                    component: 'Switch',
+                    componentProps: {
+                        checkedChildren: '开启',
+                        unCheckedChildren: '关闭',
+                        style: { width: 'fit-content' }
+                    }
+                },
+                {
+                    field: 'RWMALL',
+                    label: '二维码生成所有人可用',
+                    helpMessage: '控制二维码生成功能权限',
+                    bottomHelpMessage: '开启后所有用户均可使用二维码生成功能',
+                    component: 'Switch',
+                    componentProps: {
+                        checkedChildren: '开启',
+                        unCheckedChildren: '关闭',
+                        style: { width: 'fit-content' }
+                    }
+                },
+                {
+                    field: 'ICPALL',
+                    label: '备案信息所有人可用',
+                    helpMessage: '控制备案信息功能权限',
+                    bottomHelpMessage: '开启后所有用户均可使用备案信息功能',
+                    component: 'Switch',
+                    componentProps: {
+                        checkedChildren: '开启',
+                        unCheckedChildren: '关闭',
+                        style: { width: 'fit-content' }
+                    }
+                },
+                {
+                    field: 'DYJXALL',
+                    label: '抖音解析所有人可用',
+                    helpMessage: '控制抖音解析功能权限',
+                    bottomHelpMessage: '开启后所有用户均可使用抖音解析功能',
+                    component: 'Switch',
+                    componentProps: {
+                        checkedChildren: '开启',
+                        unCheckedChildren: '关闭',
+                        style: { width: 'fit-content' }
+                    }
+                },
+                
+                // API配置分区
+                {
+                    component: 'Divider',
+                    label: 'API 配置',
+                    componentProps: {
+                        orientation: 'left',
+                        plain: true,
+                        style: { 
+                            marginTop: '30px',
+                            borderColor: '#2196F3',
+                            fontSize: '18px'
+                        }
+                    }
+                },
+                {
+                    field: 'TPAPI',
+                    label: '图片API 配置',
+                    helpMessage: '图片API配置',
+                    bottomHelpMessage: '图片API接口地址，如你不懂不羡仙接口书写/请求逻辑请勿随意修改',
+                    component: 'Input',
+                    required: false,
+                    componentProps: {
+                        placeholder: '输入API地址'
+                    }
+                },
+                {
+                    field: 'WZXXAPI',
+                    label: '网站信息API',
+                    helpMessage: '网站信息查询API',
+                    bottomHelpMessage: '网站信息查询接口地址，如你不懂不羡仙接口书写/请求逻辑请勿随意修改',
+                    component: 'Input',
+                    required: false,
+                    componentProps: {
+                        placeholder: '输入API地址'
+                    }
+                },
+                {
+                    field: 'DKSMAPI',
+                    label: '端口扫描API',
+                    helpMessage: '端口扫描API',
+                    bottomHelpMessage: '端口扫描接口地址，如你不懂不羡仙接口书写/请求逻辑请勿随意修改',
+                    component: 'Input',
+                    required: false,
+                    componentProps: {
+                        placeholder: '输入API地址'
+                    }
+                },
+                {
+                    field: 'YMCXAPI',
+                    label: '域名查询API',
+                    helpMessage: '域名查询API',
+                    bottomHelpMessage: '域名查询接口地址，如你不懂不羡仙接口书写/请求逻辑请勿随意修改',
+                    component: 'Input',
+                    required: false,
+                    componentProps: {
+                        placeholder: '输入API地址'
+                    }
+                },
+                {
+                    field: 'RWMAPI',
+                    label: '二维码生成API',
+                    helpMessage: '二维码生成API',
+                    bottomHelpMessage: '二维码生成接口地址，如你不懂不羡仙接口书写/请求逻辑请勿随意修改',
+                    component: 'Input',
+                    required: false,
+                    componentProps: {
+                        placeholder: '输入API地址'
+                    }
+                },
+                {
+                    field: 'ICPAPI',
+                    label: '备案查询API',
+                    helpMessage: '备案查询API',
+                    bottomHelpMessage: '备案查询接口地址，如你不懂不羡仙接口书写/请求逻辑请勿随意修改',
+                    component: 'Input',
+                    required: false,
+                    componentProps: {
+                        placeholder: '输入API地址'
+                    }
+                },
+                
+                // KEY配置分区
+                {
+                    component: 'Divider',
+                    label: 'KEY 配置',
+                    componentProps: {
+                        orientation: 'left',
+                        plain: true,
+                        style: { 
+                            marginTop: '30px',
+                            borderColor: '#FF9800',
+                            fontSize: '18px'
+                        }
+                    }
+                },
+                {
+                    field: 'WZXXKEY',
+                    label: '网站信息KEY',
+                    helpMessage: '网站信息查询KEY',
+                    bottomHelpMessage: '网站信息查询授权密钥',
+                    component: 'InputPassword',
+                    required: false,
+                    componentProps: {
+                        placeholder: '输入KEY值',
+                        showPassword: true
+                    }
+                },
+                {
+                    field: 'DKSMKEY',
+                    label: '端口扫描KEY',
+                    helpMessage: '端口扫描KEY',
+                    bottomHelpMessage: '端口扫描授权密钥',
+                    component: 'InputPassword',
+                    required: false,
+                    componentProps: {
+                        placeholder: '输入KEY值',
+                        showPassword: true
+                    }
+                },
+                {
+                    field: 'YMCXKEY',
+                    label: '域名查询KEY',
+                    helpMessage: '域名查询KEY',
+                    bottomHelpMessage: '域名查询授权密钥',
+                    component: 'InputPassword',
+                    required: false,
+                    componentProps: {
+                        placeholder: '输入KEY值',
+                        showPassword: true
+                    }
+                },
+                {
+                    field: 'RWMKEY',
+                    label: '二维码生成KEY',
+                    helpMessage: '二维码生成KEY',
+                    bottomHelpMessage: '二维码生成授权密钥',
+                    component: 'InputPassword',
+                    required: false,
+                    componentProps: {
+                        placeholder: '输入KEY值',
+                        showPassword: true
+                    }
+                },
+                {
+                    field: 'ICPKEY',
+                    label: '备案查询KEY',
+                    helpMessage: '备案查询KEY',
+                    bottomHelpMessage: '备案查询授权密钥',
+                    component: 'InputPassword',
+                    required: false,
+                    componentProps: {
+                        placeholder: '输入KEY值',
+                        showPassword: true
+                    }
+                },
+                
+                // Cookie配置分区
+                {
+                    component: 'Divider',
+                    label: 'Cookie 配置',
+                    componentProps: {
+                        orientation: 'left',
+                        plain: true,
+                        style: { 
+                            marginTop: '30px',
+                            borderColor: '#FF5722',
+                            fontSize: '18px'
+                        }
+                    }
+                },
+                {
+                    field: 'LFTCK',
+                    label: '老福特Cookie',
+                    helpMessage: '用于绕过老福特登陆',
+                    bottomHelpMessage: '使用VIA浏览器或使用电脑F12获取CK 登录老福特后获取Cookie 重启生效CK可用时长约48h',
+                    component: 'InputPassword',
+                    required: false,
+                    componentProps: {
+                        placeholder: '在此输入Cookie值',
+                        showPassword: true
+                    }
+                }
             ],
             
             // 获取当前配置数据
             getConfigData() {
                 return {
-                    LFTCK: readYamlConfig(lftckPath, 'LFTCK', ""),
+                    // 权限配置
+                    adminAll: readYamlConfig(adminPath, 'adminAll', false),
+                    WZXXALL: readYamlConfig(adminPath, 'WZXXALL', true),
+                    DKSMALL: readYamlConfig(adminPath, 'DKSMALL', false),
+                    WSYMALL: readYamlConfig(adminPath, 'WSYMALL', false),
+                    RWMALL: readYamlConfig(adminPath, 'RWMALL', true),
+                    ICPALL: readYamlConfig(adminPath, 'ICPALL', true),
+                    DYJXALL: readYamlConfig(adminPath, 'DYJXALL', true),
+                    
+                    // API配置
                     TPAPI: readYamlConfig(tpapiPath, 'TPAPI', ""),
-                    adminAll: readYamlConfig(adminPath, 'adminAll', false)
+                    WZXXAPI: readYamlConfig(websiteApiPath, 'WZXXAPI', ""),
+                    DKSMAPI: readYamlConfig(websiteApiPath, 'DKSMAPI', ""),
+                    YMCXAPI: readYamlConfig(websiteApiPath, 'YMCXAPI', ""),
+                    RWMAPI: readYamlConfig(websiteApiPath, 'RWMAPI', ""),
+                    ICPAPI: readYamlConfig(websiteApiPath, 'ICPAPI', ""),
+                    
+                    // KEY配置
+                    WZXXKEY: readYamlConfig(websiteKeyPath, 'WZXXKEY', ""),
+                    DKSMKEY: readYamlConfig(websiteKeyPath, 'DKSMKEY', ""),
+                    YMCXKEY: readYamlConfig(websiteKeyPath, 'YMCXKEY', ""),
+                    RWMKEY: readYamlConfig(websiteKeyPath, 'RWMKEY', ""),
+                    ICPKEY: readYamlConfig(websiteKeyPath, 'ICPKEY', ""),
+                    
+                    // Cookie配置
+                    LFTCK: readYamlConfig(lftckPath, 'LFTCK', "")
                 }
             },
             
             // 保存配置数据
             setConfigData(configData) {
                 const results = [
-                    writeYamlConfig(lftckPath, 'LFTCK', configData.LFTCK),
+                    // 写入权限配置
+                    writeYamlConfig(adminPath, 'adminAll', configData.adminAll),
+                    writeYamlConfig(adminPath, 'WZXXALL', configData.WZXXALL),
+                    writeYamlConfig(adminPath, 'DKSMALL', configData.DKSMALL),
+                    writeYamlConfig(adminPath, 'WSYMALL', configData.WSYMALL),
+                    writeYamlConfig(adminPath, 'RWMALL', configData.RWMALL),
+                    writeYamlConfig(adminPath, 'ICPALL', configData.ICPALL),
+                    writeYamlConfig(adminPath, 'DYJXALL', configData.DYJXALL),
+                    
+                    // 写入API配置
                     writeYamlConfig(tpapiPath, 'TPAPI', configData.TPAPI),
-                    writeYamlConfig(adminPath, 'adminAll', configData.adminAll)
+                    writeYamlConfig(websiteApiPath, 'WZXXAPI', configData.WZXXAPI),
+                    writeYamlConfig(websiteApiPath, 'DKSMAPI', configData.DKSMAPI),
+                    writeYamlConfig(websiteApiPath, 'YMCXAPI', configData.YMCXAPI),
+                    writeYamlConfig(websiteApiPath, 'RWMAPI', configData.RWMAPI),
+                    writeYamlConfig(websiteApiPath, 'ICPAPI', configData.ICPAPI),
+                    
+                    // 写入KEY配置
+                    writeYamlConfig(websiteKeyPath, 'WZXXKEY', configData.WZXXKEY),
+                    writeYamlConfig(websiteKeyPath, 'DKSMKEY', configData.DKSMKEY),
+                    writeYamlConfig(websiteKeyPath, 'YMCXKEY', configData.YMCXKEY),
+                    writeYamlConfig(websiteKeyPath, 'RWMKEY', configData.RWMKEY),
+                    writeYamlConfig(websiteKeyPath, 'ICPKEY', configData.ICPKEY),
+                    
+                    // 写入Cookie配置
+                    writeYamlConfig(lftckPath, 'LFTCK', configData.LFTCK)
                 ]
                 
                 return results.every(Boolean)

@@ -82,8 +82,8 @@ export const helpList = [
             },
             {
                 "icon": 44,
-                "title": "#IP查询+IP",
-                "desc": "查询IP属于哪个地区"
+                "title": "#端口扫描域名/IP:端口",
+                "desc": "查询是否开启端口"
             },
             {
                 "icon": 64,

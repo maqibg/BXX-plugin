@@ -79,7 +79,7 @@ function readYamlConfig(filePath, key, defaultValue = "") {
     }
 }
 
-function writeYamlConfig(filePath, key, value) {
+function writeYamlConfig(filePath, key, value, removeComments = false) {
     try {
         const dir = path.dirname(filePath)
         if (!fs.existsSync(dir)) {
@@ -98,7 +98,7 @@ function writeYamlConfig(filePath, key, value) {
         for (const line of lines) {
             if (line.trim().startsWith(`${key}:`)) {
                 const indent = line.match(/^\s*/)[0] || '' 
-                const comment = line.includes('#') ? line.split('#')[1] : null
+                const comment = !removeComments && line.includes('#') ? line.split('#')[1] : null
                 const formattedValue = typeof value === 'string' 
                     ? `"${value}"` 
                     : value
@@ -159,18 +159,6 @@ export function supportGuoba() {
                             borderColor: '#4CAF50',
                             fontSize: '18px'
                         }
-                    }
-                },
-                {
-                    field: 'adminAll',
-                    label: '身份验证权限',
-                    helpMessage: '控制功能使用权限',
-                    bottomHelpMessage: '开启后所有用户均可使用身份验证功能',
-                    component: 'Switch',
-                    componentProps: {
-                        checkedChildren: '开启',
-                        unCheckedChildren: '关闭',
-                        style: { width: 'fit-content' }
                     }
                 },
                 {
@@ -275,7 +263,7 @@ export function supportGuoba() {
                     field: 'WZXXAPI',
                     label: '网站信息API',
                     helpMessage: '网站信息查询API',
-                    bottomHelpMessage: '网站信息查询接口地址，如你不懂不羡仙接口书写/请求逻辑请勿随意修改',
+                    bottomHelpMessage: '网站信息查询接口地址',
                     component: 'Input',
                     required: false,
                     componentProps: {
@@ -286,7 +274,7 @@ export function supportGuoba() {
                     field: 'DKSMAPI',
                     label: '端口扫描API',
                     helpMessage: '端口扫描API',
-                    bottomHelpMessage: '端口扫描接口地址，如你不懂不羡仙接口书写/请求逻辑请勿随意修改',
+                    bottomHelpMessage: '端口扫描接口地址',
                     component: 'Input',
                     required: false,
                     componentProps: {
@@ -297,7 +285,7 @@ export function supportGuoba() {
                     field: 'YMCXAPI',
                     label: '域名查询API',
                     helpMessage: '域名查询API',
-                    bottomHelpMessage: '域名查询接口地址，如你不懂不羡仙接口书写/请求逻辑请勿随意修改',
+                    bottomHelpMessage: '域名查询接口地址',
                     component: 'Input',
                     required: false,
                     componentProps: {
@@ -308,7 +296,7 @@ export function supportGuoba() {
                     field: 'RWMAPI',
                     label: '二维码生成API',
                     helpMessage: '二维码生成API',
-                    bottomHelpMessage: '二维码生成接口地址，如你不懂不羡仙接口书写/请求逻辑请勿随意修改',
+                    bottomHelpMessage: '二维码生成接口地址',
                     component: 'Input',
                     required: false,
                     componentProps: {
@@ -319,7 +307,7 @@ export function supportGuoba() {
                     field: 'ICPAPI',
                     label: '备案查询API',
                     helpMessage: '备案查询API',
-                    bottomHelpMessage: '备案查询接口地址，如你不懂不羡仙接口书写/请求逻辑请勿随意修改',
+                    bottomHelpMessage: '备案查询接口地址',
                     component: 'Input',
                     required: false,
                     componentProps: {
@@ -433,8 +421,7 @@ export function supportGuoba() {
             // 获取当前配置数据
             getConfigData() {
                 return {
-                    // 权限配置
-                    adminAll: readYamlConfig(adminPath, 'adminAll', false),
+                    // 权限配置 (移除了 adminAll)
                     WZXXALL: readYamlConfig(adminPath, 'WZXXALL', true),
                     DKSMALL: readYamlConfig(adminPath, 'DKSMALL', false),
                     WSYMALL: readYamlConfig(adminPath, 'WSYMALL', false),
@@ -465,8 +452,6 @@ export function supportGuoba() {
             // 保存配置数据
             setConfigData(configData) {
                 const results = [
-                    // 写入权限配置
-                    writeYamlConfig(adminPath, 'adminAll', configData.adminAll),
                     writeYamlConfig(adminPath, 'WZXXALL', configData.WZXXALL),
                     writeYamlConfig(adminPath, 'DKSMALL', configData.DKSMALL),
                     writeYamlConfig(adminPath, 'WSYMALL', configData.WSYMALL),
@@ -489,8 +474,8 @@ export function supportGuoba() {
                     writeYamlConfig(websiteKeyPath, 'RWMKEY', configData.RWMKEY),
                     writeYamlConfig(websiteKeyPath, 'ICPKEY', configData.ICPKEY),
                     
-                    // 写入Cookie配置
-                    writeYamlConfig(lftckPath, 'LFTCK', configData.LFTCK)
+                    // 写入Cookie配置 
+                    writeYamlConfig(lftckPath, 'LFTCK', configData.LFTCK, true) 
                 ]
                 
                 return results.every(Boolean)

@@ -99,7 +99,7 @@ export const helpList = [
                 "icon": 50,
                 "title": "#不羡仙(强制)更新",
                 "desc": "(强制)更新BXX-Plugin"
-            },  // 这里添加了缺失的逗号
+            }, 
             {
                 "icon": 13,
                 "title": "#不羡仙设置",

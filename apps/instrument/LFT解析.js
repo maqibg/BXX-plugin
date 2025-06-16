@@ -1,4 +1,4 @@
-import plugin from '../../../lib/plugins/plugin.js';
+import plugin from '../../../../lib/plugins/plugin.js';
 import fs from 'fs';
 import path from 'path';
 import axios from 'axios';
@@ -25,7 +25,7 @@ export class LFTParse extends plugin {
     });
 
 
-    this.baseDir = path.resolve(__dirname, '../');
+    this.baseDir = path.resolve(__dirname, '../../');
     
 
     this.ensureDirs();

@@ -1,0 +1,15 @@
+# 身份验证是否允许所有人可用
+all: true
+# 网站信息获取是否允许所有人可用
+WZXXALL: true
+# 端口扫描是否允许所有人可用
+DKSMALL: false
+# Whois域名查询是否允许所有人可用
+WSYMALL: false
+# 二维码生成是否允许所有人可用
+RWMALL: true
+# ICP备案查询是否所有人可用
+ICPALL: true
+# 抖音视频解析是否允许所有人可用
+DYJXALL: true
+adminAll: false

@@ -1,6 +1,6 @@
-import plugin from '../../../lib/plugins/plugin.js'
+import plugin from '../../../../lib/plugins/plugin.js'
 import _ from 'lodash'
-import { update as Update } from "../../other/update.js"
+import { update as Update } from "../../../other/update.js"
 
 export class Updates extends plugin {
     constructor() {

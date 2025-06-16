@@ -1,6 +1,6 @@
 import yaml from 'yaml'
 import { promises as fs } from 'fs'
-import common from '../../../lib/common/common.js'
+import common from '../../../../lib/common/common.js'
 
 //代码来源：@千奈千祁【https://gitee.com/qiannqq】
 //对代码进行修改并容易插件
@@ -45,7 +45,7 @@ export class example2 extends plugin {
     this.finish('broadcast_')
     let msg = e.msg.match(/^#(白名单|黑名单)?一键群发$/)
     console.log(e.msg)
-    let otheryaml = await fs.readFile(`../../config/config/other.yaml`, `utf-8`)
+    let otheryaml = await fs.readFile(`../../../config/config/other.yaml`, `utf-8`)
     let other = yaml.parse(otheryaml)
     let result
     if(!msg[1]){

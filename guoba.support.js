@@ -189,29 +189,6 @@ export function supportGuoba() {
                     }
                 },
                 {
-                    field: 'SFYZKEY',
-                    label: '身份验证 密钥',
-                    helpMessage: '用于API认证的安全密钥KEY',
-                    bottomHelpMessage: '身份验证API接口平台KEY，如你不懂不羡仙API平台加密方式请勿修改',
-                    component: 'InputPassword',
-                    required: false,
-                    componentProps: {
-                        placeholder: '输入身份验证密钥',
-                        showPassword: true
-                    }
-                },
-                {
-                    field: 'SFYZAPI',
-                    label: '身份验证 API地址',
-                    helpMessage: '请求的API接口地址',
-                    bottomHelpMessage: '身份验证API接口，如你不懂不羡仙API接口地址逻辑请勿修改',
-                    component: 'Input',
-                    required: false,
-                    componentProps: {
-                        placeholder: 'https://api.bxxov.com/endpoint'
-                    }
-                },
-                {
                     field: 'TPAPI',
                     label: '图片API 配置',
                     helpMessage: '图片API配置',
@@ -254,8 +231,6 @@ export function supportGuoba() {
             getConfigData() {
                 return {
                     LFTCK: readYamlConfig(lftckPath, 'LFTCK', ""),
-                    SFYZKEY: readYamlConfig(sfyzkPath, 'SFYZKEY', ""),
-                    SFYZAPI: readYamlConfig(sfyzaPath, 'SFYZAPI', ""),
                     TPAPI: readYamlConfig(tpapiPath, 'TPAPI', ""),
                     adminAll: readYamlConfig(adminPath, 'adminAll', false)
                 }
@@ -265,8 +240,6 @@ export function supportGuoba() {
             setConfigData(configData) {
                 const results = [
                     writeYamlConfig(lftckPath, 'LFTCK', configData.LFTCK),
-                    writeYamlConfig(sfyzkPath, 'SFYZKEY', configData.SFYZKEY),
-                    writeYamlConfig(sfyzaPath, 'SFYZAPI', configData.SFYZAPI),
                     writeYamlConfig(tpapiPath, 'TPAPI', configData.TPAPI),
                     writeYamlConfig(adminPath, 'adminAll', configData.adminAll)
                 ]

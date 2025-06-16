@@ -76,11 +76,6 @@ export const helpList = [
                 "desc": "获取网站基本信息"
             },
             {
-                "icon": 43,
-                "title": "#端口扫描域名/ip:端口",
-                "desc": "扫描当前链接是否开启某端口"
-            },
-            {
                 "icon": 11,
                 "title": "#域名信息+域名",
                 "desc": "Whois域名查询"

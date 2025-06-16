@@ -81,11 +81,6 @@ export const helpList = [
                 "desc": "扫描当前链接是否开启某端口"
             },
             {
-                "icon": 66,
-                "title": "#网站测速+链接",
-                "desc": "测试本地链接速度"
-            },
-            {
                 "icon": 11,
                 "title": "#域名信息+域名",
                 "desc": "Whois域名查询"

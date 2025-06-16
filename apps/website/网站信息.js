@@ -12,7 +12,8 @@ export default class extends plugin {
             priority: 5000,
             rule: [
                 {
-                    reg: '^#网站信息\\s*\\+?\\s*(https?://[\\w.-]+\\.[a-z]{2,}(?:/\\S*)?)',
+                    // 优化正则表达式，确保匹配所有格式
+                    reg: '^#网站信息\\s*[\\+\\s]*(https?:\\/\\/[^\\s]+)',
                     fnc: 'getWebsiteInfo'
                 }
             ]
@@ -20,12 +21,32 @@ export default class extends plugin {
     }
 
     async getWebsiteInfo(e) {
+        console.log(`收到命令: ${e.msg}`);
+        console.log(`匹配结果: ${JSON.stringify(e.match)}`);
+        
+        let url = null;
+        if (e.match && e.match[1]) {
+            url = e.match[1];
+        } else {
+            const urlRegex = /(https?:\/\/[^\s]+)/;
+            const match = e.msg.match(urlRegex);
+            if (match && match[0]) {
+                url = match[0];
+            }
+        }
+        
+        if (!url) {
+            await e.reply('未检测到有效链接，请使用格式: #网站信息+链接');
+            return true;
+        }
+
+        console.log(`提取链接: ${url}`);
+        
         if (!(await this.checkPermission(e))) {
             await e.reply('暂无权限，只有主人才能操作');
             return true;
         }
 
-        const url = e.match[1];
         try {
             const { apiUrl, apiKey } = await this.getApiConfig();
             if (!apiUrl || !apiKey) {
@@ -34,8 +55,11 @@ export default class extends plugin {
             }
 
             const apiFullUrl = `${apiUrl}?apikey=${apiKey}&url=${encodeURIComponent(url)}`;
-            const response = await axios.get(apiFullUrl, { timeout: 10000 });
+            console.log(`请求API: ${apiFullUrl}`);
+            
+            const response = await axios.get(apiFullUrl, { timeout: 15000 });
             const res = response.data;
+            console.log(`API响应: ${JSON.stringify(res)}`);
 
             if (res.code !== 1) {
                 return await this.handleApiError(res, e);
@@ -60,7 +84,10 @@ export default class extends plugin {
                 const adminConfig = fs.readFileSync(adminPath, 'utf8');
                 const wzxxAll = adminConfig.match(/WZXXALL:\s*(true|false)/);
                 
-                if (wzxxAll && wzxxAll[1] === 'true') return true;
+                if (wzxxAll && wzxxAll[1] === 'true') {
+                    console.log('权限检查: 所有人可用');
+                    return true;
+                }
             }
         } catch (err) {
             console.error('读取权限配置失败:', err);
@@ -79,37 +106,48 @@ export default class extends plugin {
             if (fs.existsSync(otherPath)) {
                 const otherConfig = fs.readFileSync(otherPath, 'utf8');
                 const userId = e.user_id;
+                console.log(`检查用户权限: ${userId}`);
                 
-                const masterQQRegex = /masterQQ:\s*[\r\n]+([\s\S]*?)(?=\r?\n\w|$)/;
-                const masterQQMatch = otherConfig.match(masterQQRegex);
-                
-                if (masterQQMatch) {
-                    const masterQQList = masterQQMatch[1].split('\n')
-                        .filter(line => line.trim().startsWith('-'))
-                        .map(line => line.replace(/^-\s*/, '').trim());
+                if (otherConfig.includes('masterQQ:')) {
+                    const masterQQRegex = /masterQQ:\s*[\r\n]+([\s\S]*?)(?=\r?\n\w|$)/;
+                    const masterQQMatch = otherConfig.match(masterQQRegex);
                     
-                    if (masterQQList.includes(userId.toString()) {
-                        return true;
+                    if (masterQQMatch) {
+                        const masterQQList = masterQQMatch[1].split('\n')
+                            .filter(line => line.trim().startsWith('-'))
+                            .map(line => line.replace(/^-\s*/, '').trim());
+                        
+                        console.log(`masterQQ列表: ${JSON.stringify(masterQQList)}`);
+                        
+                        if (masterQQList.includes(userId.toString())) {
+                            console.log('权限检查: 用户是masterQQ');
+                            return true;
+                        }
                     }
                 }
                 
-                const masterRegex = /master:\s*[\r\n]+([\s\S]*?)(?=\r?\n\w|$)/;
-                const masterMatch = otherConfig.match(masterRegex);
-                
-                if (masterMatch) {
-                    const masterList = masterMatch[1].split('\n')
-                        .filter(line => line.trim().startsWith('-'))
-                        .map(line => line.replace(/^-\s*/, '').trim());
+                if (otherConfig.includes('master:')) {
+                    const masterRegex = /master:\s*[\r\n]+([\s\S]*?)(?=\r?\n\w|$)/;
+                    const masterMatch = otherConfig.match(masterRegex);
                     
-                    for (const item of masterList) {
-                        if (item.includes(':')) {
-                            const parts = item.split(':');
-                            if (parts.length >= 2 && parts[parts.length - 1] === userId.toString()) {
+                    if (masterMatch) {
+                        const masterList = masterMatch[1].split('\n')
+                            .filter(line => line.trim().startsWith('-'))
+                            .map(line => line.replace(/^-\s*/, '').trim());
+                        
+                        console.log(`master列表: ${JSON.stringify(masterList)}`);
+                        
+                        for (const item of masterList) {
+                            if (item.includes(':')) {
+                                const parts = item.split(':');
+                                if (parts.length >= 2 && parts[parts.length - 1] === userId.toString()) {
+                                    console.log('权限检查: 用户是master');
+                                    return true;
+                                }
+                            } else if (item === userId.toString()) {
+                                console.log('权限检查: 用户是master');
                                 return true;
                             }
-                        }
-                        else if (item === userId.toString()) {
-                            return true;
                         }
                     }
                 }
@@ -117,6 +155,8 @@ export default class extends plugin {
         } catch (err) {
             console.error('读取主人配置失败:', err);
         }
+        
+        console.log('权限检查: 用户无权限');
         return false;
     }
 
@@ -179,15 +219,31 @@ export default class extends plugin {
         
         if (logoUrl) {
             try {
-                const ext = path.extname(logoUrl) || '.png';
+                let validUrl = logoUrl;
+                if (!validUrl.startsWith('http')) {
+                    if (validUrl.startsWith('//')) {
+                        validUrl = 'https:' + validUrl;
+                    } else {
+                        const baseUrl = new URL(url).origin;
+                        validUrl = baseUrl + (validUrl.startsWith('/') ? validUrl : '/' + validUrl);
+                    }
+                }
+                
+                console.log(`处理后的Logo URL: ${validUrl}`);
+                
+                const ext = path.extname(validUrl) || '.png';
                 logoPath = path.join(uploadDir, `website_logo_${Date.now()}${ext}`);
                 
-                const response = await axios.get(logoUrl, {
+                const response = await axios.get(validUrl, {
                     responseType: 'arraybuffer',
-                    timeout: 10000
+                    timeout: 15000,
+                    headers: {
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+                    }
                 });
                 
                 fs.writeFileSync(logoPath, response.data);
+                console.log(`Logo保存到: ${logoPath}`);
             } catch (err) {
                 console.error('Logo下载失败:', err);
             }
@@ -207,13 +263,15 @@ export default class extends plugin {
         }
 
         await e.reply(msg);
+        console.log('网站信息已发送');
 
         if (logoPath && fs.existsSync(logoPath)) {
             setTimeout(() => {
                 fs.unlink(logoPath, (err) => {
                     if (err) console.error('删除临时文件失败:', err);
+                    else console.log(`临时文件已删除: ${logoPath}`);
                 });
-            }, 3000); 
+            }, 5000);
         }
     }
 }

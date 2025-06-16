@@ -41,11 +41,6 @@ export const helpList = [
         "group": "实用功能",
         "list": [
             {
-                "icon": 54,
-                "title": "#一键群发",
-                "desc": "一键群发给黑/白名单群聊消息"
-            },
-            {
                 "icon": 89,
                 "title": "#设置主人 主人QQ:机器人QQ",
                 "desc": "一键设置新主人！【仅主人权限可用】"

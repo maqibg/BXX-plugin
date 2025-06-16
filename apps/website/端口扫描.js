@@ -13,7 +13,7 @@ export default class PortScanPlugin extends plugin {
             priority: 5000,
             rule: [
                 {
-                    reg: '^#端口扫描\\s*([\\w\\.-]+):?(\\d+)?$',
+                    reg: '^#端口扫描\\s*([\\w\\.-]+)(?::(\\d+))?$',
                     fnc: 'portScan'
                 }
             ]
@@ -21,14 +21,12 @@ export default class PortScanPlugin extends plugin {
     }
 
     async portScan(e) {
-        // 权限验证
         const hasPermission = await this.checkPermission(e);
         if (!hasPermission) {
             await e.reply('暂无权限，只有主人才能操作');
             return true;
         }
 
-        // 解析用户输入
         const input = e.msg.replace('#端口扫描', '').trim();
         const [host, port] = this.parseInput(input);
         
@@ -42,23 +40,33 @@ export default class PortScanPlugin extends plugin {
         }
 
         try {
-            // 获取API配置
             const [apiUrl, apiKey] = this.getApiConfig();
             if (!apiUrl || !apiKey) {
                 await e.reply('API配置错误，请联系管理员');
                 return true;
             }
 
-            // 构建请求URL
             const requestUrl = `${apiUrl}?apikey=${apiKey}&url=${encodeURIComponent(host)}&port=${port}`;
-            
-            // 发送API请求
-            const response = await fetch(requestUrl);
-            const data = await response.json();
+            console.log(`[端口扫描] 请求URL: ${requestUrl}`);
+            const controller = new AbortController();
+            const timeout = setTimeout(() => {
+                controller.abort();
+            }, 10000); 
 
-            // 处理API响应
+            const response = await fetch(requestUrl, {
+                signal: controller.signal
+            });
+            clearTimeout(timeout);
+
+            if (!response.ok) {
+                throw new Error(`API响应错误: ${response.status} ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            console.log(`[端口扫描] API响应: ${JSON.stringify(data)}`);
+
             if (data.code === 1) {
-                const status = data.data.isOpen === 1 ? '开放' : '关闭';
+                const status = data.data.isOpen === 1 ? '开放 ✅' : '关闭 ❌';
                 await e.reply([
                     `🔍 端口扫描结果`,
                     `📍 地址: ${data.data.host}`,
@@ -70,32 +78,40 @@ export default class PortScanPlugin extends plugin {
             }
         } catch (err) {
             console.error('端口扫描错误:', err);
-            await e.reply('⚠️ 扫描服务暂时不可用，请稍后再试');
+            let errorMsg = '⚠️ 扫描服务暂时不可用，请稍后再试';
+            
+            if (err.name === 'AbortError') {
+                errorMsg = '⏱ 请求超时，请检查网络连接或稍后再试';
+            } else if (err.message.includes('ENOTFOUND')) {
+                errorMsg = '🌐 无法解析API域名，请检查网络设置';
+            } else if (err.message.includes('ECONNREFUSED')) {
+                errorMsg = '🚫 连接被拒绝，API服务可能不可用';
+            }
+            
+            await e.reply(errorMsg);
         }
 
         return true;
     }
 
-    // 解析用户输入
     parseInput(input) {
-        const parts = input.split(':');
-        let host = parts[0].trim();
-        let port = parseInt(parts[1]) || 80;
+        const match = input.match(/^([\w.-]+)(?::(\d+))?$/);
+        if (!match) {
+            return [null, null];
+        }
+        const host = match[1];
+        const port = match[2] ? parseInt(match[2]) : 80;
         return [host, port];
     }
 
-    // 获取API配置
+
     getApiConfig() {
         try {
             const basePath = path.join(process.cwd(), 'plugins/BXX-plugin');
-            
-            // 读取API地址
             const apiPath = path.join(basePath, 'data/API/website.yaml');
             const apiContent = fs.readFileSync(apiPath, 'utf8');
             const apiConfig = yaml.parse(apiContent);
             const apiUrl = apiConfig.DKSMAPI;
-            
-            // 读取API密钥
             const keyPath = path.join(basePath, 'data/KEY/website.yaml');
             const keyContent = fs.readFileSync(keyPath, 'utf8');
             const keyConfig = yaml.parse(keyContent);
@@ -108,7 +124,7 @@ export default class PortScanPlugin extends plugin {
         }
     }
 
-    // 错误消息映射
+
     getErrorMessage(code) {
         const errors = {
             100: 'API密钥为空',
@@ -119,38 +135,50 @@ export default class PortScanPlugin extends plugin {
         return errors[code] || `未知错误 (代码: ${code})`;
     }
 
-    // 权限检查
+
     async checkPermission(e) {
         try {
             const basePath = path.join(process.cwd(), 'plugins/BXX-plugin');
             
-            // 检查全局权限设置
+
             const adminPath = path.join(basePath, 'config/config/admin.yaml');
+            if (!fs.existsSync(adminPath)) {
+                console.error('[权限检查] admin.yaml文件不存在');
+                return false;
+            }
+            
             const adminContent = fs.readFileSync(adminPath, 'utf8');
             const adminConfig = yaml.parse(adminContent);
             
             if (adminConfig.DKSMALL === true) {
-                return true; // 所有人可用
+                return true; 
             }
             
-            // 检查主人权限
+
             const otherPath = path.join(process.cwd(), 'config/config/other.yaml');
+            if (!fs.existsSync(otherPath)) {
+                console.error('[权限检查] other.yaml文件不存在');
+                return false;
+            }
+            
             const otherContent = fs.readFileSync(otherPath, 'utf8');
             const otherConfig = yaml.parse(otherContent);
-            
-            const userId = e.user_id;
+            const userId = e.user_id.toString();
             const masterQQ = otherConfig.masterQQ || [];
             const masters = otherConfig.master || [];
             
-            // 检查masterQQ列表
-            if (masterQQ.some(qq => qq.toString() === userId.toString())) {
+
+            if (masterQQ.some(qq => qq.toString() === userId)) {
                 return true;
             }
             
-            // 检查master列表
+
             const isMaster = masters.some(entry => {
-                const parts = entry.split(':');
-                return parts[0] === userId.toString();
+                if (typeof entry === 'string') {
+                    const parts = entry.split(':');
+                    return parts[0] === userId;
+                }
+                return false;
             });
             
             return isMaster;

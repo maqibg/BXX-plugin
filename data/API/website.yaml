@@ -8,3 +8,7 @@ YMCXAPI: "https://api.nanyinet.com/api/gateway/whois/api.php"
 IPCXAPI: "https://api.nanyinet.com/api/gateway/ip/api.php"
 # 二维码生成API
 RWMAPI: "https://api.nanyinet.com/api/gateway/qrcode/api.php"
+# ICP查询API
+ICPAPI: "https://api.nanyinet.com/api/gateway/icp/api.php"
+# SSL证书查询
+SSLAPI: "https://api.nanyinet.com/api/gateway/ssl/api.php"

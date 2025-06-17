@@ -15,7 +15,7 @@ export default class BXXConfig extends plugin {
                     fnc: 'showConfig'
                 },
                 {
-                    reg: '^#不羡仙设置(网站信息|端口扫描|域名查询|二维码生成|备案信息|抖音解析)所有人可用(开启|关闭)$',
+                    reg: '^#不羡仙设置(网站信息|端口扫描|域名查询|二维码生成|备案信息|抖音解析|综合解析)所有人可用(开启|关闭)$',
                     fnc: 'updateConfig'
                 },
                 {
@@ -32,10 +32,6 @@ export default class BXXConfig extends plugin {
     async isMaster(userId) {
         const otherPath = path.join(this.rootPath, 'config/config/other.yaml');
         try {
-            if (!fs.existsSync(otherPath)) {
-                console.error('权限配置文件不存在:', otherPath);
-                return false;
-            }
             const file = fs.readFileSync(otherPath, 'utf8');
             const lines = file.split('\n');
             const masterQQIndex = lines.findIndex(line => line.startsWith('masterQQ:'));
@@ -70,10 +66,6 @@ export default class BXXConfig extends plugin {
     async showConfig(e) {
         const configPath = this.getPluginPath('config/config/admin.yaml');
         try {
-            if (!fs.existsSync(configPath)) {
-                e.reply('配置文件不存在，请先创建');
-                return true;
-            }
             const file = fs.readFileSync(configPath, 'utf8');
             const lines = file.split('\n');
             const statusMap = {
@@ -82,7 +74,8 @@ export default class BXXConfig extends plugin {
                 '域名查询': lines[7]?.split(':')[1]?.trim() === 'true',
                 '二维码生成': lines[9]?.split(':')[1]?.trim() === 'true',
                 '备案信息': lines[11]?.split(':')[1]?.trim() === 'true',
-                '抖音解析': lines[13]?.split(':')[1]?.trim() === 'true'
+                '抖音解析': lines[13]?.split(':')[1]?.trim() === 'true',
+                '综合解析': lines[15]?.split(':')[1]?.trim() === 'true'
             };
             
             let msg = '【不羡仙功能权限设置】\n';
@@ -113,7 +106,8 @@ export default class BXXConfig extends plugin {
             '域名查询': 7,  
             '二维码生成': 9, 
             '备案信息': 11, 
-            '抖音解析': 13  
+            '抖音解析': 13,
+            '综合解析': 15
         };
         const lineIndex = featureMap[feature];
         if (lineIndex === undefined) {
@@ -122,38 +116,15 @@ export default class BXXConfig extends plugin {
         }
         const configPath = this.getPluginPath('config/config/admin.yaml');
         try {
-            const dir = path.dirname(configPath);
-            if (!fs.existsSync(dir)) {
-                fs.mkdirSync(dir, { recursive: true });
+            let lines = fs.readFileSync(configPath, 'utf8').split('\n');
+            if (lineIndex >= lines.length) {
+                e.reply(`配置行[${lineIndex}]不存在`);
+                return true;
             }
-            let lines = [];
-            if (fs.existsSync(configPath)) {
-                lines = fs.readFileSync(configPath, 'utf8').split('\n');
-            } else {
-                lines = [
-                    '# 给自己一个备注：不要隔行或修改已配置行！因为程序验证权限是根据行数验证的！！',
-                    '# 示例：ALL: true',
-                    '# 网站信息获取是否允许所有人可用',
-                    'WZXXALL: true',
-                    '# 端口扫描是否允许所有人可用',
-                    'DKSMALL: false',
-                    '# Whois域名查询是否允许所有人可用',
-                    'WSYMALL: false',
-                    '# 二维码生成是否允许所有人可用',
-                    'RWMALL: true',
-                    '# ICP备案查询是否所有人可用',
-                    'ICPALL: true',
-                    '# 抖音视频解析是否允许所有人可用',
-                    'DYJXALL: true'
-                ];
-            }
-            while (lines.length <= lineIndex) {
-                lines.push('');
-            }
-            const lineParts = lines[lineIndex].split(':');
-            if (lineParts.length > 0) {
-                const key = lineParts[0].trim();
-                lines[lineIndex] = `${key}: ${action}`;
+            const line = lines[lineIndex];
+            let key = '';
+            if (line.includes(':')) {
+                key = line.split(':')[0].trim();
             } else {
                 const keyMap = {
                     3: 'WZXXALL',
@@ -161,11 +132,12 @@ export default class BXXConfig extends plugin {
                     7: 'WSYMALL',
                     9: 'RWMALL',
                     11: 'ICPALL',
-                    13: 'DYJXALL'
+                    13: 'DYJXALL',
+                    15: 'ZHJXALL'
                 };
-                lines[lineIndex] = `${keyMap[lineIndex]}: ${action}`;
+                key = keyMap[lineIndex];
             }
-            
+            lines[lineIndex] = `${key}: ${action}`;
             fs.writeFileSync(configPath, lines.join('\n'));
             e.reply(`不羡仙${feature}所有人可用${action ? '开启' : '关闭'}设置成功`);
         } catch (err) {
@@ -187,28 +159,14 @@ export default class BXXConfig extends plugin {
         }
         const ckPath = this.getPluginPath('data/Cookie/LFTCK.yaml');
         try {
-            const dir = path.dirname(ckPath);
-            if (!fs.existsSync(dir)) {
-                fs.mkdirSync(dir, { recursive: true });
-            }
-            let lines = [];
-            if (fs.existsSync(ckPath)) {
-                lines = fs.readFileSync(ckPath, 'utf8').split('\n');
-            } else {
-                lines = [
-                    '# 老福特Cookie',
-                    'LFTCK: ""'
-                ];
-            }
-            if (lines.length > 1) {
-                lines[1] = `LFTCK: "${ck}"`;
-            } else if (lines.length === 1) {
-                lines.push(`LFTCK: "${ck}"`);
-            } else {
+            let lines = fs.readFileSync(ckPath, 'utf8').split('\n');
+            if (lines.length < 2) {
                 lines = [
                     '# 老福特Cookie',
                     `LFTCK: "${ck}"`
                 ];
+            } else {
+                lines[1] = `LFTCK: "${ck}"`;
             }
             fs.writeFileSync(ckPath, lines.join('\n'));
             e.reply('老福特Cookie设置成功');

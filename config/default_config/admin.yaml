@@ -12,3 +12,5 @@ RWMALL: true
 ICPALL: true
 # 抖音视频解析是否允许所有人可用
 DYJXALL: true
+# 综合视频解析是否允许所有人可用
+ZHJXALL: true

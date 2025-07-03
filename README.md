@@ -3,28 +3,26 @@
 ![ljhx2.png](https://raw.gitcode.com/user-images/assets/5424764/be7eaf0c-76b9-40dc-9e5f-dc47ebfadb8b/ljhx2.png 'ljhx2.png')
 ****
 ## 插件介绍：
-**1.提供各类有的没的的功能，主要是自己玩起来舒服，全是js**
+**提供各类有的没的的功能，主要是自己玩起来舒服，全是js**
 
-**2.如遇到问题卸载本插件即可~**
+**本插件功能优先级可能高于您使用的插件，遇到问题请拉黑功能或删除插件**
 
-**3.插件整体框架由其他插件修改而来**
+**本插件拒绝任何提议~如遇到问题卸载本插件即可~**
 
-**4.本仓库任何资源均来自网络侵权可联系删除**
-
-**5.本插件拒绝任何提议~**
+**如您要参与项目请Pull提交【自测后提交】**
 ****
 
 # 安装插件：
-**1.gitee：**
+**1.giecode：**
+
+`git clone --depth=1 https://gitcode.com/ymoan/BXX-plugin.git plugins/BXX-plugin`
+****
+**2.gitee：**
 
 `git clone --depth=1 https://gitee.com/bxxov/BXX-plugin.git plugins/BXX-plugin`
 
 ****
 
-**2.giecode：**
-
-`git clone --depth=1 https://gitcode.com/ymoan/BXX-plugin.git plugins/BXX-plugin`
-****
 # 安装依赖：
 `pnpm i`
 
@@ -62,8 +60,6 @@
 **云崽论坛：[Yunzai论坛/文档](https://yunz.cc)**
 
 
-
-
 ****
 
 # 友情链接：
@@ -77,7 +73,6 @@
 
 ****
 # 其他：
-**如您要参与项目请Pull提交【自测后提交】**
 
 **素材来源于网络，仅供交流学习使用，严禁用于商业和非法用途**
 

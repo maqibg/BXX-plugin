@@ -61,9 +61,7 @@
 
 **云崽论坛：[Yunzai论坛/文档](https://yunz.cc)**
 
-**不羡仙云：[不羡仙云【提供云计算服务】](https://cloud.bxxov.cn)**
 
-**不羡仙云：[不羡仙API【提供API服务】](https://api.bxxov.com)**
 
 
 ****
@@ -73,15 +71,16 @@
 
 [TRSS-Yunzai](https://gitee.com/TimeRainStarSky/Yunzai)
 
-**部分代码借鉴**
+**部分代码/功能灵感借鉴：**
 
 [插件库](https://gitee.com/yhArcadia/Yunzai-Bot-plugins-index)
 
 ****
 # 其他：
+**如您要参与项目请Pull提交【自测后提交】**
 
 **素材来源于网络，仅供交流学习使用，严禁用于商业和非法用途**
 
 **出现问题可以提交issue或者加QQ群**
 
-**API图片仓库地址：https://gitcode.com/bxianx/BXX-resource**
+**API图片仓库地址：https://gitcode.com/ymoan/BXX-resource**

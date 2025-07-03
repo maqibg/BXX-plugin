@@ -17,13 +17,13 @@
 # 安装插件：
 **1.gitee：**
 
-`git clone --depth=1 https://gitee.com/bxianx/BXX-plugin.git plugins/BXX-plugin`
+`git clone --depth=1 https://gitee.com/bxxov/BXX-plugin.git plugins/BXX-plugin`
 
 ****
 
 **2.giecode：**
 
-`git clone --depth=1 https://gitcode.com/bxianx/BXX-plugin.git plugins/BXX-plugin`
+`git clone --depth=1 https://gitcode.com/ymoan/BXX-plugin.git plugins/BXX-plugin`
 ****
 # 安装依赖：
 `pnpm i`

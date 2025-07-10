@@ -18,7 +18,7 @@ export class uninstall extends plugin {
       ]
     })
     this.configPath = path.join(process.cwd(), 'config/config/other.yaml')
-    this.targetPath = path.resolve(fileURLToPath(import.meta.url), '../../../../')
+    this.targetPath = path.resolve(fileURLToPath(import.meta.url), '../../../../../')
   }
 
   static pendingUninstall = new Map()

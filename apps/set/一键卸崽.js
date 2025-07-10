@@ -101,23 +101,23 @@ export class uninstall extends plugin {
   async deleteDirectory(dirPath) {
     let deletedCount = 0
     let failedPaths = []
-
     const removeReadOnly = (path) => {
       try {
         const stats = fs.statSync(path)
         if (stats.isFile() && (stats.mode & 0o444) === 0o444) {
           fs.chmodSync(path, 0o666)
         }
-      } catch (err) {}
+      } catch (err) {
+        console.warn(`无法修改文件属性: ${path}`, err.message)
+      }
     }
-
     const traverseAndDelete = async (currentPath) => {
       try {
-        if (!fs.existsSync(currentPath)) return
+        if (!fs.existsSync(currentPath)) return { deleted: 0, failed: [] }
         const files = fs.readdirSync(currentPath)
-        
         for (const file of files) {
           const fullPath = path.join(currentPath, file)
+          
           try {
             removeReadOnly(fullPath)
             const stats = fs.statSync(fullPath)
@@ -126,19 +126,30 @@ export class uninstall extends plugin {
               const { deleted, failed } = await traverseAndDelete(fullPath)
               deletedCount += deleted
               failedPaths = [...failedPaths, ...failed]
-              try { fs.rmdirSync(fullPath); deletedCount++ } 
-              catch (err) { if (err.code !== 'ENOTEMPTY') failedPaths.push(fullPath) }
             } else {
               fs.unlinkSync(fullPath)
               deletedCount++
             }
-          } catch (err) { failedPaths.push(fullPath) }
+          } catch (err) {
+            console.warn(`无法删除文件/文件夹: ${fullPath}`, err.message)
+            failedPaths.push(fullPath)
+          }
         }
-      } catch (err) { failedPaths.push(currentPath) }
-      
+        try {
+          fs.rmdirSync(currentPath)
+          deletedCount++
+        } catch (err) {
+          if (err.code !== 'ENOTEMPTY') {
+            console.warn(`无法删除目录: ${currentPath}`, err.message)
+            failedPaths.push(currentPath)
+          }
+        }
+      } catch (err) {
+        console.warn(`遍历目录失败: ${currentPath}`, err.message)
+        failedPaths.push(currentPath)
+      }
       return { deleted: deletedCount, failed: failedPaths }
     }
-
     await traverseAndDelete(dirPath)
     return { deletedCount, failedPaths }
   }

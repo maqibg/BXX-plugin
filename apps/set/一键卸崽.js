@@ -8,7 +8,7 @@ export class uninstall extends plugin {
   constructor() {
     super({
       name: '[BXX-plugin] 一键卸崽',
-      dsc: '一键删除整个项目目录',
+      dsc: '一键删除Yunzai框架目录',
       event: 'message',
       priority: 100,
       rule: [
@@ -64,8 +64,9 @@ export class uninstall extends plugin {
     uninstall.pendingUninstall.set(userId, { winPath, timeout })
 
     await e.reply([
-      '⚠️ 检测到您是主人权限，执行【#一键卸崽】功能',
-      `这将会尝试删除您的目录：${this.targetPath} 里所有可删除的文件和文件夹！`,
+      '⚠️ 警告：您即将执行【#一键卸崽】功能',
+      `这将会尝试删除Yunzai框架目录：${this.targetPath} 下的所有文件和文件夹！`,
+      '此操作可能导致Yunzai机器人完全无法运行！',
       '无法删除的文件将被保留。',
       '',
       '请发送以下内容进行确认：',
@@ -139,12 +140,6 @@ export class uninstall extends plugin {
     }
 
     await traverseAndDelete(dirPath)
-    
-    try {
-      fs.rmdirSync(dirPath)
-      deletedCount++
-    } catch (err) { if (err.code !== 'ENOTEMPTY') failedPaths.push(dirPath) }
-
     return { deletedCount, failedPaths }
   }
 

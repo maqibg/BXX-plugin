@@ -11,11 +11,11 @@ export class ForwardInfo extends plugin {
     constructor() {
         super({
             name: '前瞻信息查询',
-            dsc: '原神/星穹铁道/绝区零前瞻信息查询',
+            dsc: '原神/星铁/绝区零前瞻信息查询',
             event: 'message',
             priority: 9999,
             rule: [{
-                reg: '^(#原神前瞻|\\*星穹铁道前瞻|%绝区零前瞻)$',
+                reg: '^(#原神前瞻|#星铁前瞻|#绝区零前瞻)$', 
                 fnc: 'queryForwardInfo' 
             }]
         });
@@ -23,8 +23,8 @@ export class ForwardInfo extends plugin {
         this.ensureDirs();
         this.commandGameMap = {
             '#原神前瞻': '原神',
-            '*星穹铁道前瞻': '星穹铁道',
-            '%绝区零前瞻': '绝区零'
+            '#星铁前瞻': '星穹铁道', 
+            '#绝区零前瞻': '绝区零'  
         };
     }
     get apiFilePath() {

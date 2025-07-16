@@ -1,0 +1,144 @@
+import plugin from '../../../../lib/plugins/plugin.js';
+import fs from 'fs';
+import path from 'path';
+import axios from 'axios';
+import puppeteer from 'puppeteer';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+export class ForwardInfo extends plugin {
+    constructor() {
+        super({
+            name: '前瞻信息查询',
+            dsc: '原神/星穹铁道/绝区零前瞻信息查询',
+            event: 'message',
+            priority: 5000,
+            rule: [{
+                reg: '^#(原神|星穹铁道|绝区零)前瞻$',
+                fnc: 'query'
+            }]
+        });
+        
+        this.baseDir = path.resolve(__dirname, '../../');
+        this.ensureDirs();
+    }
+    
+    get apiFilePath() {
+        return path.join(this.baseDir, 'data/API/QZXX.yaml');
+    }
+    
+    get uploadDir() {
+        return path.join(this.baseDir, 'uploads');
+    }
+    
+    ensureDirs() {
+        const dirs = [this.uploadDir, path.dirname(this.apiFilePath)];
+        dirs.forEach(dir => {
+            if (!fs.existsSync(dir)) {
+                fs.mkdirSync(dir, { recursive: true });
+            }
+        });
+    }
+    
+    async query(e) {
+        const game = e.msg.match(/(原神|星穹铁道|绝区零)/)[0];
+        await e.reply(`获取${game}前瞻信息中...`);
+        
+        let browser = null;
+        let imgPath = null;
+        
+        try {
+            const apiUrl = await this.parseApiConfig();
+            const targetUrl = `${apiUrl}?ver=${encodeURIComponent(game)}`;
+            const forwardData = await this.fetchForwardData(targetUrl);
+            
+            if (forwardData.code === '0') return await e.reply('游戏名错误或暂无前瞻信息');
+            if (forwardData.code !== '1') return await e.reply('API返回异常');
+            
+            imgPath = path.join(this.uploadDir, `${game}_${Date.now()}.png`);
+            browser = await puppeteer.launch({
+                headless: true,
+                args: ['--no-sandbox', '--disable-setuid-sandbox']
+            });
+            
+            await this.captureScreenshot(browser, forwardData.data, imgPath);
+            await this.sendResult(e, forwardData, imgPath);
+            
+        } catch (err) {
+            console.error('前瞻信息查询失败:', err);
+            await e.reply(`服务异常: ${err.message}`);
+        } finally {
+            await this.cleanupResources(browser, imgPath);
+        }
+    }
+    
+    async parseApiConfig() {
+        if (!fs.existsSync(this.apiFilePath)) throw new Error('API配置文件不存在');
+        
+        try {
+            const data = fs.readFileSync(this.apiFilePath, 'utf8');
+            const apiMatch = data.match(/QZXXAPI:\s*"([^"]+)"/);
+            if (!apiMatch || !apiMatch[1]) throw new Error('API配置格式错误');
+            return apiMatch[1].replace(/\/+$/, '');
+        } catch (err) {
+            throw new Error('读取API配置失败: ' + err.message);
+        }
+    }
+    
+    async fetchForwardData(url) {
+        try {
+            const response = await axios.get(url, {
+                timeout: 10000,
+                headers: {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'}
+            });
+            return response.data;
+        } catch (err) {
+            throw new Error('请求前瞻信息API失败: ' + err.message);
+        }
+    }
+    
+    async captureScreenshot(browser, url, imgPath) {
+        const page = await browser.newPage();
+        try {
+            await page.setViewport({ width: 1200, height: 800 });
+            await page.setDefaultNavigationTimeout(30000);
+            await page.goto(url, {waitUntil: 'networkidle2', timeout: 30000});
+            await new Promise(resolve => setTimeout(resolve, 3000));
+            await page.screenshot({path: imgPath, fullPage: true, captureBeyondViewport: true});
+        } finally {
+            await page.close();
+        }
+    }
+    
+    async sendResult(e, data, imgPath) {
+        const msg = [
+            `前瞻信息获取成功！`,
+            `游戏：${data.name}`,
+            `版本：${data.version}`,
+            `日期：${data.date}`,
+            `链接：${data.data}`
+        ];
+        
+        await e.reply(msg.join('\n'));
+        try {
+            await e.reply(segment.image(imgPath));
+        } catch (sendErr) {
+            console.error('发送截图失败:', sendErr);
+            await e.reply('截图发送失败，但前瞻信息已获取');
+        }
+    }
+    
+    async cleanupResources(browser, imgPath) {
+        if (browser) {
+            try { await browser.close(); } 
+            catch (browserErr) { console.error('关闭浏览器失败:', browserErr); }
+        }
+        if (imgPath && fs.existsSync(imgPath)) {
+            try { fs.unlinkSync(imgPath); } 
+            catch (unlinkErr) { console.error('删除截图失败:', unlinkErr); }
+        }
+    }
+}

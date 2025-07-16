@@ -43,6 +43,7 @@
 |二维码合成|#二维码合成+链接/文字 |将链接/文字合成为二维码|
 |备案查询|#备案查询+链接 |查询ICP备案|
 |一键卸崽|#一键卸崽|跑路功能，删除可删除的文件|
+|前瞻信息|#XX前瞻|可以查看原神星铁绝区零前瞻信息|
 |不羡仙设置|#不羡仙设置 |修改不羡仙配置|
 |更新|#不羡仙更新|更新插件|
 
@@ -61,11 +62,13 @@
 **云崽论坛：[Yunzai论坛/文档](https://yunz.cc)**
 
 
-****
+
 
 # 😊友情链接：
 [Miao-Yunzai](https://gitee.com/yoimiya-kokomi/Miao-Yunzai)😠
 [TRSS-Yunzai](https://gitee.com/TimeRainStarSky/Yunzai)
+
+**API提供者：<ins><span style="color:#66a3e0;">云墨安</span></ins>**
 
 **部分代码/功能灵感借鉴：**
 

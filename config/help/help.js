@@ -67,12 +67,12 @@ export const helpList = [
             },
             {
                 "icon": 33,
-                "title": "*星穹铁道前瞻",
+                "title": "#星穹铁道前瞻",
                 "desc": "获取星铁最新前瞻"
             },
             {
                 "icon": 22,
-                "title": "%绝区零前瞻",
+                "title": "#绝区零前瞻",
                 "desc": "获取绝区零最新前瞻"
             },
         ]

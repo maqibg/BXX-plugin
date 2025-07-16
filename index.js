@@ -56,7 +56,7 @@ try {
       apps[identifier] = defaultExport;
       successCount++;
     } catch (error) {
-      logger.error(`不羡仙后门载入错误：${chalk.red(identifier)}`);
+      logger.error(`不羡仙后门载入失败：${chalk.red(identifier)}`);
       logger.error(error);
       failureCount++;
     }

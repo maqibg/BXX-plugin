@@ -4,10 +4,11 @@
     "author": "@BXXjs",
     "type": "module",
     "dependencies": {
-        "axios": "^0.24.0",
-        "ioredis": "^5.3.2", 
-        "better-sqlite3": "^9.2.0",
-        "sqlite": "^5.1.1",
-        "rimraf": "^5.0.5"
+      "axios": "^0.24.0",
+      "ioredis": "^5.3.2",
+      "better-sqlite3": "^9.2.0",
+      "sqlite": "^5.1.1",
+      "rimraf": "^5.0.5",
+      "cheerio": "^1.0.0"
     }
-}
+  }  

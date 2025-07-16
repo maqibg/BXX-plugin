@@ -13,10 +13,10 @@ export class ForwardInfo extends plugin {
             name: '前瞻信息查询',
             dsc: '原神/星穹铁道/绝区零前瞻信息查询',
             event: 'message',
-            priority: 3000,
+            priority: 9999,
             rule: [{
                 reg: '^(#原神前瞻|\\*星穹铁道前瞻|%绝区零前瞻)$',
-                fnc: 'query'
+                fnc: 'queryForwardInfo' 
             }]
         });
         this.baseDir = path.resolve(__dirname, '../../');
@@ -41,26 +41,31 @@ export class ForwardInfo extends plugin {
             }
         });
     }
-    async query(e) {
+    async queryForwardInfo(e) {
         const command = e.msg.trim();
         const game = this.commandGameMap[command];
         if (!game) {
             return false;
         }
+
         await e.reply(`获取${game}前瞻信息中...`);
         let browser = null;
         let imgPath = null;
+
         try {
             const apiUrl = await this.parseApiConfig();
             const targetUrl = `${apiUrl}?ver=${encodeURIComponent(game)}`;
             const forwardData = await this.fetchForwardData(targetUrl);
+            
             if (forwardData.code === '0') return await e.reply('游戏名错误或暂无前瞻信息');
             if (forwardData.code !== '1') return await e.reply('API返回异常');
+            
             imgPath = path.join(this.uploadDir, `${game}_${Date.now()}.png`);
             browser = await puppeteer.launch({
                 headless: true,
                 args: ['--no-sandbox', '--disable-setuid-sandbox']
             });
+            
             await this.captureScreenshot(browser, forwardData.data, imgPath);
             await this.sendResult(e, forwardData, imgPath);
         } catch (err) {

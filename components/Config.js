@@ -16,7 +16,7 @@ class Config {
     this.initCfg()
   }
 
-  /** 初始化配置 */
+  /** 初始化配置~ */
   initCfg() {
     let path = `${Plugin_Path}/config/config/`
     if (!fs.existsSync(path)) fs.mkdirSync(path)

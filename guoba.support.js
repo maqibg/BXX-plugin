@@ -112,7 +112,7 @@ function writeYamlConfig(filePath, key, value, removeComments = false) {
 export function supportGuoba() {
     return {
         pluginInfo: {
-            name: 'BXX-plugin',
+            name: '不羡仙插件',
             title: 'BXX-plugin',
             author: '@不羡仙',
             authorLink: 'https://gitcode.com/ymoan',

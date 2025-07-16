@@ -5,10 +5,8 @@ import axios from 'axios';
 import puppeteer from 'puppeteer';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-
 export class ForwardInfo extends plugin {
     constructor() {
         super({
@@ -17,23 +15,24 @@ export class ForwardInfo extends plugin {
             event: 'message',
             priority: 5000,
             rule: [{
-                reg: '^#(原神|星穹铁道|绝区零)前瞻$',
+                reg: '^(#原神前瞻|\\*星穹铁道前瞻|%绝区零前瞻)$',
                 fnc: 'query'
             }]
         });
-        
         this.baseDir = path.resolve(__dirname, '../../');
         this.ensureDirs();
+        this.commandGameMap = {
+            '#原神前瞻': '原神',
+            '*星穹铁道前瞻': '星穹铁道',
+            '%绝区零前瞻': '绝区零'
+        };
     }
-    
     get apiFilePath() {
         return path.join(this.baseDir, 'data/API/QZXX.yaml');
     }
-    
     get uploadDir() {
         return path.join(this.baseDir, 'uploads');
     }
-    
     ensureDirs() {
         const dirs = [this.uploadDir, path.dirname(this.apiFilePath)];
         dirs.forEach(dir => {
@@ -42,42 +41,42 @@ export class ForwardInfo extends plugin {
             }
         });
     }
-    
     async query(e) {
-        const game = e.msg.match(/(原神|星穹铁道|绝区零)/)[0];
+        const command = e.msg.trim();
+        const game = this.commandGameMap[command];
+        if (!game) {
+            return false;
+        }
         await e.reply(`获取${game}前瞻信息中...`);
-        
         let browser = null;
         let imgPath = null;
-        
         try {
             const apiUrl = await this.parseApiConfig();
             const targetUrl = `${apiUrl}?ver=${encodeURIComponent(game)}`;
             const forwardData = await this.fetchForwardData(targetUrl);
-            
             if (forwardData.code === '0') return await e.reply('游戏名错误或暂无前瞻信息');
             if (forwardData.code !== '1') return await e.reply('API返回异常');
-            
             imgPath = path.join(this.uploadDir, `${game}_${Date.now()}.png`);
             browser = await puppeteer.launch({
                 headless: true,
                 args: ['--no-sandbox', '--disable-setuid-sandbox']
             });
-            
             await this.captureScreenshot(browser, forwardData.data, imgPath);
             await this.sendResult(e, forwardData, imgPath);
-            
         } catch (err) {
             console.error('前瞻信息查询失败:', err);
-            await e.reply(`服务异常: ${err.message}`);
+            try {
+                await e.reply(`服务异常: ${err.message}`);
+            } catch (replyErr) {
+                console.error('回复消息失败:', replyErr);
+            }
         } finally {
             await this.cleanupResources(browser, imgPath);
         }
+        return true;
     }
-    
     async parseApiConfig() {
         if (!fs.existsSync(this.apiFilePath)) throw new Error('API配置文件不存在');
-        
         try {
             const data = fs.readFileSync(this.apiFilePath, 'utf8');
             const apiMatch = data.match(/QZXXAPI:\s*"([^"]+)"/);
@@ -87,7 +86,6 @@ export class ForwardInfo extends plugin {
             throw new Error('读取API配置失败: ' + err.message);
         }
     }
-    
     async fetchForwardData(url) {
         try {
             const response = await axios.get(url, {
@@ -99,7 +97,6 @@ export class ForwardInfo extends plugin {
             throw new Error('请求前瞻信息API失败: ' + err.message);
         }
     }
-    
     async captureScreenshot(browser, url, imgPath) {
         const page = await browser.newPage();
         try {
@@ -112,7 +109,6 @@ export class ForwardInfo extends plugin {
             await page.close();
         }
     }
-    
     async sendResult(e, data, imgPath) {
         const msg = [
             `前瞻信息获取成功！`,
@@ -121,7 +117,6 @@ export class ForwardInfo extends plugin {
             `日期：${data.date}`,
             `链接：${data.data}`
         ];
-        
         await e.reply(msg.join('\n'));
         try {
             await e.reply(segment.image(imgPath));
@@ -130,7 +125,6 @@ export class ForwardInfo extends plugin {
             await e.reply('截图发送失败，但前瞻信息已获取');
         }
     }
-    
     async cleanupResources(browser, imgPath) {
         if (browser) {
             try { await browser.close(); } 

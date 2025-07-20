@@ -23,7 +23,7 @@
 
 ****
 
-**2.github：**
+**3.github：**
 
 `git clone --depth=1 https://github.com/ymoan/BXX-plugin.git plugins/BXX-plugin`
 

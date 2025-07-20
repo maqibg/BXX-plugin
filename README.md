@@ -23,6 +23,11 @@
 
 ****
 
+**2.github：**
+
+`git clone --depth=1 https://github.com/ymoan/BXX-plugin.git plugins/BXX-plugin`
+
+****
 # 😁安装依赖：
 `pnpm i`
 

@@ -9,7 +9,7 @@ export class MultiPlatformParser extends plugin {
       name: '综合解析',
       dsc: '解析多个平台的视频/图文内容',
       event: 'message',
-      priority: 5000,
+      priority: 500,
       rule: [
         {
           reg: '^#综合解析\\s*(https?:\\/\\/[\\w.-]+\\/\\S*)$',

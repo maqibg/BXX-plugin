@@ -14,3 +14,5 @@ ICPALL: true
 DYJXALL: true
 # 综合视频解析是否允许所有人可用
 ZHJXALL: true
+# 邮件发送师范所有人可用
+YXFSALL：true 

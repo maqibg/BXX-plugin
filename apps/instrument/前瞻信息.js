@@ -106,12 +106,73 @@ export class ForwardInfo extends plugin {
         const page = await browser.newPage();
         try {
             await page.setViewport({ width: 1200, height: 800 });
-            await page.setDefaultNavigationTimeout(30000);
-            await page.goto(url, {waitUntil: 'networkidle2', timeout: 30000});
-            await new Promise(resolve => setTimeout(resolve, 3000));
-            await page.screenshot({path: imgPath, fullPage: true, captureBeyondViewport: true});
+            await page.setDefaultNavigationTimeout(60000);
+            await page.goto(url, {
+                waitUntil: ['domcontentloaded', 'networkidle2'],
+                timeout: 60000
+            });
+            await this.waitForContent(page);
+            await this.scrollPage(page);
+            await page.waitForNetworkIdle({ idleTime: 1000, timeout: 10000 });
+            await page.screenshot({
+                path: imgPath,
+                fullPage: true,
+                captureBeyondViewport: true
+            });
         } finally {
             await page.close();
+        }
+    }
+    async waitForContent(page) {
+        const maxWaitTime = 15000;
+        const startTime = Date.now();
+        const selectors = [
+            '.article-title',
+            '.content-wrapper',
+            '.mhy-container',
+            'h1',
+            'body > div.container'
+        ];
+        while (Date.now() - startTime < maxWaitTime) {
+            for (const selector of selectors) {
+                try {
+                    await page.waitForSelector(selector, {
+                        visible: true,
+                        timeout: 2000
+                    });
+                    return;
+                } catch (e) {}
+            }
+            await new Promise(resolve => setTimeout(resolve, 500));
+        }
+        console.warn('关键内容等待超时');
+    }
+    async scrollPage(page) {
+        try {
+            const bodyHeight = await page.evaluate(() => {
+                return Math.max(
+                    document.body.scrollHeight,
+                    document.documentElement.scrollHeight,
+                    document.body.offsetHeight,
+                    document.documentElement.offsetHeight,
+                    document.body.clientHeight,
+                    document.documentElement.clientHeight
+                );
+            });
+            const viewportHeight = 800;
+            let currentPosition = 0;
+            while (currentPosition < bodyHeight) {
+                currentPosition += viewportHeight;
+                await page.evaluate((position) => {
+                    window.scrollTo(0, position);
+                }, currentPosition);
+                await new Promise(resolve => setTimeout(resolve, 300));
+            }
+            await page.evaluate(() => {
+                window.scrollTo(0, 0);
+            });
+        } catch (e) {
+            console.warn('滚动页面失败:', e);
         }
     }
     async sendResult(e, data, imgPath) {

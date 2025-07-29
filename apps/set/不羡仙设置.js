@@ -15,7 +15,7 @@ export default class BXXConfig extends plugin {
                     fnc: 'showConfig'
                 },
                 {
-                    reg: '^#不羡仙设置(网站信息|端口扫描|域名查询|二维码生成|备案信息|抖音解析|综合解析)所有人可用(开启|关闭)$',
+                    reg: '^#不羡仙设置(网站信息|端口扫描|域名查询|二维码生成|备案信息|抖音解析|综合解析|邮箱发送)所有人可用(开启|关闭)$',
                     fnc: 'updateConfig'
                 },
                 {
@@ -75,7 +75,8 @@ export default class BXXConfig extends plugin {
                 '二维码生成': lines[9]?.split(':')[1]?.trim() === 'true',
                 '备案信息': lines[11]?.split(':')[1]?.trim() === 'true',
                 '抖音解析': lines[13]?.split(':')[1]?.trim() === 'true',
-                '综合解析': lines[15]?.split(':')[1]?.trim() === 'true'
+                '综合解析': lines[15]?.split(':')[1]?.trim() === 'true',
+                '邮箱发送': lines[18]?.split(':')[1]?.trim() === 'true'
             };
             
             let msg = '【不羡仙功能权限设置】\n';
@@ -107,7 +108,8 @@ export default class BXXConfig extends plugin {
             '二维码生成': 9, 
             '备案信息': 11, 
             '抖音解析': 13,
-            '综合解析': 15
+            '综合解析': 15,
+            '邮箱发送': 18
         };
         const lineIndex = featureMap[feature];
         if (lineIndex === undefined) {
@@ -133,7 +135,8 @@ export default class BXXConfig extends plugin {
                     9: 'RWMALL',
                     11: 'ICPALL',
                     13: 'DYJXALL',
-                    15: 'ZHJXALL'
+                    15: 'ZHJXALL',
+                    18: 'YXFSALL',
                 };
                 key = keyMap[lineIndex];
             }

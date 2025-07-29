@@ -15,7 +15,7 @@
 # 😒安装插件：
 **1.gitcode：**
 
-`git clone --depth=1 https://gitcode.com/ymano/BXX-plugin.git plugins/BXX-plugin`
+`git clone --depth=1 https://gitcode.com/ymoan/BXX-plugin.git plugins/BXX-plugin`
 ****
 **2.gitee：**
 

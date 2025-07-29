@@ -13,7 +13,7 @@ export class ForwardInfo extends plugin {
             name: '前瞻信息查询',
             dsc: '原神/星铁/绝区零前瞻信息查询',
             event: 'message',
-            priority: 9999,
+            priority: 500,
             rule: [{
                 reg: '^(#原神前瞻|#星铁前瞻|#绝区零前瞻)$', 
                 fnc: 'queryForwardInfo' 

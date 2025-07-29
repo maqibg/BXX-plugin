@@ -1,6 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import yaml from 'yaml'
+import lodash from 'lodash'
 
 const configDir = path.resolve('./plugins/BXX-plugin/')
 const lftckPath = path.join(configDir, 'data/Cookie/LFTCK.yaml')
@@ -92,27 +93,23 @@ function writeYamlConfig(filePath, key, value, removeComments = false) {
 export function supportGuoba() {
     return {
         pluginInfo: {
-            name: '不羡仙插件',
-            title: 'BXX-plugin',
+            name: 'BXX-plugin',
+            title: '不羡仙插件',
             author: '@不羡仙',
             authorLink: 'https://gitcode.com/ymoan/',
             link: 'https://gitcode.com/ymoan/BXX-plugin',
             isV3: true,
             isV2: false,
-            description: '不羡仙插件',
-            icon: 'mdi:application-cog',
-            iconColor: '#9C27B0'
+            description: 'Yunzai论坛：https://yunz.cc/——交流群：872488071——所有功能仅供娱乐请勿违规使用',
+            showInMenu: 'auto',
+            icon: 'mdi:rocket-launch',
+            iconColor: '#00a2ffff'
         },
         configInfo: {
             schemas: [
                 {
-                    component: 'Divider',
                     label: '权限配置',
-                    componentProps: {
-                        orientation: 'left',
-                        plain: true,
-                        style: { marginTop: '20px', borderColor: '#4CAF50', fontSize: '18px' }
-                    }
+                    component: 'SOFT_GROUP_BEGIN'
                 },
                 {
                     field: 'WZXXALL',
@@ -162,14 +159,10 @@ export function supportGuoba() {
                     component: 'Switch',
                     componentProps: { checkedChildren: '开启', unCheckedChildren: '关闭', style: { width: 'fit-content' } }
                 },
+                
                 {
-                    component: 'Divider',
                     label: 'API 配置',
-                    componentProps: {
-                        orientation: 'left',
-                        plain: true,
-                        style: { marginTop: '30px', borderColor: '#2196F3', fontSize: '18px' }
-                    }
+                    component: 'SOFT_GROUP_BEGIN'
                 },
                 {
                     field: 'TPAPI',
@@ -227,14 +220,10 @@ export function supportGuoba() {
                     required: false,
                     componentProps: { placeholder: '输入API地址' }
                 },
+                
                 {
-                    component: 'Divider',
                     label: 'KEY 配置',
-                    componentProps: {
-                        orientation: 'left',
-                        plain: true,
-                        style: { marginTop: '30px', borderColor: '#FF9800', fontSize: '18px' }
-                    }
+                    component: 'SOFT_GROUP_BEGIN'
                 },
                 {
                     field: 'WZXXKEY',
@@ -285,14 +274,10 @@ export function supportGuoba() {
                     required: false,
                     componentProps: { placeholder: '输入KEY值', showPassword: true }
                 },
+                
                 {
-                    component: 'Divider',
                     label: 'Cookie 配置',
-                    componentProps: {
-                        orientation: 'left',
-                        plain: true,
-                        style: { marginTop: '30px', borderColor: '#FF5722', fontSize: '18px' }
-                    }
+                    component: 'SOFT_GROUP_BEGIN'
                 },
                 {
                     field: 'LFTCK',
@@ -301,14 +286,10 @@ export function supportGuoba() {
                     required: false,
                     componentProps: { placeholder: '在此输入Cookie值', showPassword: true }
                 },
+                
                 {
-                    component: 'Divider',
                     label: '邮箱配置',
-                    componentProps: {
-                        orientation: 'left',
-                        plain: true,
-                        style: { marginTop: '30px', borderColor: '#4CAF50', fontSize: '18px' }
-                    }
+                    component: 'SOFT_GROUP_BEGIN'
                 },
                 {
                     field: 'smtp',

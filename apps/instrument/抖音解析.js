@@ -9,7 +9,7 @@ export class DouyinParser extends plugin {
       name: '抖音解析',
       dsc: '解析抖音视频/图集内容',
       event: 'message',
-      priority: 9999,
+      priority: 500,
       rule: [
         {
           reg: '^#抖音解析\\s*(https?:\\/\\/[\\w.-]+\\/\\S*)$',

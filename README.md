@@ -1,4 +1,4 @@
-# 🤣不羡仙-plugin 插件说明
+# 自用精简版 🤣不羡仙-plugin 插件说明
 
 ![ljhx2.png](https://raw.gitcode.com/user-images/assets/5424764/be7eaf0c-76b9-40dc-9e5f-dc47ebfadb8b/ljhx2.png 'ljhx2.png')
 ****
@@ -9,23 +9,11 @@
 
 **本插件拒绝任何提议~如遇到问题卸载本插件即可~**
 
-**如您要参与项目请Pull提交【[点击入库](https://gitcode.com/invite/link/c39042cc41ae448b9527)】**
+**如您要参与项目请Pull提交【[点击入库](https://github.com/maqibg/BXX-plugin)】**
 ****
 
 # 😒安装插件：
-**1.gitcode：**
-
-`git clone --depth=1 https://gitcode.com/ymoan/BXX-plugin.git plugins/BXX-plugin`
-****
-**2.gitee：**
-
-`git clone --depth=1 https://gitee.com/bxxov/BXX-plugin.git plugins/BXX-plugin`
-
-****
-
-**3.github：**
-
-`git clone --depth=1 https://github.com/ymoan/BXX-plugin.git plugins/BXX-plugin`
+`git clone --depth=1 https://github.com/maqibg/BXX-plugin.git plugins/BXX-plugin`
 
 ****
 # 😁安装依赖：
@@ -37,19 +25,11 @@
 | | 功能命令|功能讲解  |
 |--|--|--|
 |XX写真 |#XX写真 | 某某角色写真图（包含原神，星铁角色） |
-|随机图|#随机图 |随机一张原神，星铁角色图 可能包含BL|
 |设置/删除主人|#设置/删除主人 |#设置/删除主人12345:12345|
-|老福特解析|#老福特解析+链接 |解析爬取老福特图片|
 |抖音解析|#抖音解析+链接 |解析爬取抖音视频|
 |综合解析|#综合解析+链接 |解析爬取全平台视频|
-|网站信息|#网站信息+链接 |获取网站信息|
-|端口扫描|#端口扫描域名/IP:端口 |扫端口|
-|域名信息|#域名信息+域名 |Whois域名查询|
 |二维码合成|#二维码合成+链接/文字 |将链接/文字合成为二维码|
-|备案查询|#备案查询+链接 |查询ICP备案|
-|一键卸崽|#一键卸崽|跑路功能，删除可删除的文件|
 |前瞻信息|#XX前瞻|可以查看原神星铁绝区零前瞻信息|
-|发送邮件|#发邮箱+邮箱号+标题+内容|可以查看原神星铁绝区零前瞻信息|
 |不羡仙设置|#不羡仙设置 |修改不羡仙配置|
 |更新|#不羡仙更新|更新插件|
 

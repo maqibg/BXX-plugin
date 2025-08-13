@@ -16,11 +16,6 @@ export const helpList = [
         "group": "娱乐功能",
         "list": [
             {
-                "icon": 81,
-                "title": "#随机图",
-                "desc": "随机角色写真图"
-            },
-            {
                 "icon": 24,
                 "title": "#XX写真图",
                 "desc": "某角色写真图"
@@ -34,16 +29,6 @@ export const helpList = [
                 "icon": 29,
                 "title": "#综合解析+链接",
                 "desc": "解析一堆热门平台视频"
-            },
-            {
-                "icon": 64,
-                "title": "#老福特解析+链接",
-                "desc": "解析爬取老福特文章里的图片"
-            },
-            {
-                "icon": 3,
-                "title": "#一键卸崽",
-                "desc": "一键跑路！删除可删除的文件！慎用！"
             },
         ]
     },
@@ -78,38 +63,13 @@ export const helpList = [
         ]
     },
     {
-        "group": "站长工具",
+        "group": "工具功能",
         "list": [
-            {
-                "icon": 12,
-                "title": "#网站信息+链接",
-                "desc": "获取网站基本信息"
-            },
-            {
-                "icon": 11,
-                "title": "#域名信息+域名",
-                "desc": "Whois域名查询"
-            },
-            {
-                "icon": 44,
-                "title": "#端口扫描域名/IP:端口",
-                "desc": "查询是否开启端口"
-            },
             {
                 "icon": 64,
                 "title": "#二维码合成+链接/文字",
                 "desc": "将链接/文字合成为二维码"
-            },
-            {
-                "icon": 2,
-                "title": "#发邮箱+账号+标题+内容",
-                "desc": "发送给指定的邮箱/需配置账密且开启smtp"
-            },
-            {
-                "icon": 33,
-                "title": "#备案查询+域名",
-                "desc": "查询ICP域名备案"
-            },
+            }
         ]
     },
     {
@@ -128,12 +88,7 @@ export const helpList = [
             {
                 "icon": 1,
                 "title": "#不羡仙设置XX所有人可用开启/关闭",
-                "desc": "#不羡仙设置端口扫描所有人可用开启/关闭"
-            },
-            {
-                "icon": 9,
-                "title": "#不羡仙设置邮箱XX+内容",
-                "desc": "邮箱的配置文件，建议使用锅巴填写"
+                "desc": "支持 DYJX/ZHJX/RWM 开关"
             },
             {
                 "icon": 13,

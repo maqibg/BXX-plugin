@@ -10,7 +10,7 @@ export class xiezhen extends plugin {
       name: '不羡仙写真图',
       dsc: '写真图片生成',
       event: 'message',
-      priority: 99999,
+      priority: 1,
       rule: [
         {
           reg: '^#(.*?)写真图$',

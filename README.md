@@ -1,4 +1,5 @@
-# 自用精简版 🤣不羡仙-plugin 插件说明
+# 自用精简版 
+🤣不羡仙-plugin 插件说明
 
 ![ljhx2.png](https://raw.gitcode.com/user-images/assets/5424764/be7eaf0c-76b9-40dc-9e5f-dc47ebfadb8b/ljhx2.png 'ljhx2.png')
 ****

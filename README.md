@@ -3,13 +3,17 @@
 ![ljhx2.png](https://raw.gitcode.com/user-images/assets/5424764/be7eaf0c-76b9-40dc-9e5f-dc47ebfadb8b/ljhx2.png 'ljhx2.png')
 ****
 ## 😍插件介绍：
-**提供各类有的没的的功能，主要是自己玩起来舒服，全是js**
+**提供各类有的没的的功能，主要是自己玩起来舒服，全是且js><span style="color:#0066cc;">65%</span>**
 
 **本插件功能优先级可能高于您使用的插件，遇到问题请拉黑功能或删除插件**
 
-**本插件拒绝任何提议~如遇到问题卸载本插件即可~**
+**本插件拒绝任何【非合理】提议~如遇到问题<span style="color:#e60000;">卸载本插件</span>或截图＋文字叙述提交或<span style="color:#e60000;">加入QQ群</span>或<span style="color:#e60000;">Yunzai论坛反馈</span><span style="color:#e60000;">issues</span>即可~**
 
-**如您要参与项目请Pull提交【[点击入库](https://gitcode.com/invite/link/c39042cc41ae448b9527)】**
+**如您要参与项目请Pull提交【[点击入库](https://gitcode.com/invite/link/c39042cc41ae448b9527)】欢迎共同参与此项目！**
+****
+## 暂时咕咕的功能：
+### 群管功能【踢人禁言通过加群申请好友申请等。。。】留着记一下备忘：（优化验证权限，功能可用者，黑白名单等必要内容）将帮助图分为AB防止内容过多
+
 ****
 
 # 😒安装插件：
@@ -50,6 +54,7 @@
 |一键卸崽|#一键卸崽|跑路功能，删除可删除的文件|
 |前瞻信息|#XX前瞻|可以查看原神星铁绝区零前瞻信息|
 |发送邮件|#发邮箱+邮箱号+标题+内容|可以查看原神星铁绝区零前瞻信息|
+|群管帮助|命令待定|讲解待定|
 |不羡仙设置|#不羡仙设置 |修改不羡仙配置|
 |更新|#不羡仙更新|更新插件|
 
@@ -74,7 +79,7 @@
 [Miao-Yunzai](https://gitee.com/yoimiya-kokomi/Miao-Yunzai)😠
 [TRSS-Yunzai](https://gitee.com/TimeRainStarSky/Yunzai)
 
-**API提供者：<ins><span style="color:#66a3e0;">云墨安</span></ins>**
+**API提供者：[云墨安API](https://api.ymoan.net/)**
 
 **部分代码/功能灵感借鉴：**
 

@@ -1,0 +1,14 @@
+{
+  "name": "BXX-plugin",
+  "version": "V 1.0.1",
+  "author": "@BXXjs",
+  "type": "module",
+  "dependencies": {
+      "axios": "^0.24.0",
+      "yaml": "^2.4.2",
+      "lodash": "^4.17.21",
+      "chokidar": "^3.6.0",
+      "chalk": "^5.3.0",
+      "node-fetch": "^3.3.2"
+  }
+}
